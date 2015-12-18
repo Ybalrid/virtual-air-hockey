@@ -16,8 +16,14 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	new AnnEngine("A game using Annwvyn");
 	
 	//Load your ressources here
+
+	AnnEngine::Instance()->loadDir("media/table");
+	AnnEngine::Instance()->loadDir("media/puck");
+
 	AnnEngine::Instance()->initResources();
 	AnnEngine::Instance()->oculusInit();
+	AnnEngine::Instance()->setDebugPhysicState(true);
+
 	//If the player has to folow the integrated physics scheme
 	AnnEngine::Instance()->initPlayerPhysics();
 	//Do the other initialization herttEventListener(); //Basic events
@@ -35,8 +41,9 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	AnnEngine::Instance()->useDefaultEventListener();
 	AnnEngine::Instance()->startGameplayLoop();
 
+
 	//destroy the engine
-	delete AnnEngine::Instance();
-	return EXIT_SUCCESS;
+	//delete AnnEngine::Instance();
+	exit(EXIT_SUCCESS);
 }
 
