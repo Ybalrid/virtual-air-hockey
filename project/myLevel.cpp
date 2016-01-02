@@ -45,8 +45,8 @@ void MyLevel::load()
 
 
 	auto paddle(addGameObject("paddle.mesh"));
-	paddle->setPos(0, -1.7, 0);
-	paddle->setUpPhysics();
+	paddle->setPos(0, 5, 0);
+	paddle->setUpPhysics(1, cylinderShape);
 	test = paddle;
 	
 
