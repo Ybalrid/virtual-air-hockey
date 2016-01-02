@@ -31,10 +31,10 @@ void MyLevel::load()
 	//Add it to the level lst
 	levelLighting.push_back(light);*/
 
-	/*auto table(addGameObject("table.mesh"));
+	auto table(addGameObject("table.mesh"));
 	table->setPos(0, -1.5,0);
 	table->setScale(0.85,0.85,0.85);
-	table->setUpPhysics();*/
+	table->setUpPhysics();
 
 	auto puck(addGameObject("puck.mesh"));
 	puck->setPos(0, -3.5, 0);
