@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "myLevel.hpp"
 
-//AnnGameObject* test = nullptr;
+AnnGameObject* test = nullptr;
 
 MyLevel::MyLevel() : AnnAbstractLevel()
 {
@@ -36,10 +36,19 @@ void MyLevel::load()
 	table->setScale(0.85,0.85,0.85);
 	table->setUpPhysics();
 
+	/*
 	auto puck(addGameObject("puck.mesh"));
 	puck->setPos(0, -3.5, 0);
 	puck->setUpPhysics(1, cylinderShape);
 	//test = puck;
+	*/
+
+
+	auto paddle(addGameObject("paddle.mesh"));
+	paddle->setPos(0, -1.7, 0);
+	paddle->setUpPhysics();
+	test = paddle;
+	
 
 	auto Ground (engine->createGameObject("Ground.mesh"));
 	Ground->setPos(0,-2,0);
@@ -54,6 +63,6 @@ void MyLevel::load()
 
 void MyLevel::runLogic()
 {
-	//if(test)
-	//AnnDebug() << test->pos();
+	if(test)
+	AnnDebug() << test->pos();
 }
