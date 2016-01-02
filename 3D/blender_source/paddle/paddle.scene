@@ -1,0 +1,20 @@
+<scene exported_by="alaeddine" previous_export_time="1450533487.871465" export_time="1450535708.071957" formatVersion="1.0.1" >
+  <nodes >
+    <node name="Air Hockey Puck" >
+      <position z="-0.000000" x="0.000000" y="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qx="0.000000" qy="0.000000" />
+      <scale z="1.000000" x="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_z="False" friction_y="1.0" meshFile="Air Hockey Puck.mesh" lock_rot_y="False" damping_trans="0.03999999910593033" ghost="False" friction_x="1.0" velocity_max="0.0" velocity_min="0.0" damping_rot="0.10000000149011612" friction_z="1.0" lock_rot_x="False" lock_trans_y="False" anisotropic_friction="False" physics_type="STATIC" mass="1.0" mass_radius="1.0" lock_trans_x="False" lock_trans_z="False" actor="False" name="Air Hockey Puck" inertia_tensor="0.4000000059604645" />
+    </node>
+  </nodes>
+  <externals />
+  <environment >
+    <colourAmbient b="0.0" g="0.0" r="0.0" />
+    <colourDiffuse b="0.05087608844041824" g="0.05087608844041824" r="0.05087608844041824" />
+    <colourBackground b="0.05087608844041824" g="0.05087608844041824" r="0.05087608844041824" />
+  </environment>
+</scene>
