@@ -39,14 +39,14 @@ void MyLevel::load()
 
 	
 	auto puck(addGameObject("puck.mesh"));
-	puck->setPos(0, -.7, .9);
+	puck->setPos(0, -.7, .8);
 	puck->setUpPhysics(1, convexShape);
 	test = puck;
 	
 
 
 	auto paddle(addGameObject("paddle.mesh"));
-	paddle->setPos(0, 0, 1);
+	paddle->setPos(0, -.70, 1.05);
 	paddle->setScale(0.25,0.25,0.25);
 	paddle->setUpPhysics(1, convexShape);
 	playerPaddleActor = new PlayerPaddleAction(paddle);
@@ -60,7 +60,7 @@ void MyLevel::load()
 
 
 	engine->setAmbiantLight(Ogre::ColourValue(0.4,0.4,0.4));
-	engine->getPlayer()->setPosition(AnnVect3(0,0,2.1));
+	engine->getPlayer()->setPosition(AnnVect3(0,-1,2.1));
 
 	//Add light source directly over the table	
 	auto pointLight(addLight());
