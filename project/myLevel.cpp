@@ -36,28 +36,35 @@ void MyLevel::load()
 	table->setScale(0.85,0.85,0.85);
 	table->setUpPhysics();
 
-	/*
+	
 	auto puck(addGameObject("puck.mesh"));
-	puck->setPos(0, -3.5, 0);
-	puck->setUpPhysics(1, cylinderShape);
-	//test = puck;
-	*/
+	puck->setPos(0, 1, 0);
+	puck->setUpPhysics(1, convexShape);
+	test = puck;
+	
 
 
 	auto paddle(addGameObject("paddle.mesh"));
-	paddle->setPos(0, 5, 0);
+	paddle->setPos(0, 0, 1);
+	paddle->setScale(0.25,0.25,0.25);
 	paddle->setUpPhysics(1, convexShape);
-	test = paddle;
 	
 
-	auto Ground (engine->createGameObject("Ground.mesh"));
+	auto Ground (engine->createGameObject("room.mesh"));
 	Ground->setPos(0,-2,0);
 	Ground->setUpPhysics();
 	//Add it to the level list
 	levelContent.push_back(Ground);
 
 
-	engine->setAmbiantLight(Ogre::ColourValue::White);
+	engine->setAmbiantLight(Ogre::ColourValue(0.4,0.4,0.4));
+	engine->getPlayer()->setPosition(AnnVect3(0,0,2.1));
+
+	//Add light source directly over the table	
+	auto pointLight(addLight());
+	pointLight->setPosition(AnnVect3(0,1,0));
+
+	engine->resetPlayerPhysics();
 
 }
 
@@ -65,4 +72,5 @@ void MyLevel::runLogic()
 {
 	if(test)
 	AnnDebug() << test->pos();
+	AnnDebug() << "player : " << AnnEngine::Instance()->getPlayer()->getPosition();
 }

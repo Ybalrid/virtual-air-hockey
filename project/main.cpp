@@ -20,6 +20,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	AnnEngine::Instance()->loadDir("media/table");
 	AnnEngine::Instance()->loadDir("media/puck");
 	AnnEngine::Instance()->loadDir("media/paddle");
+	AnnEngine::Instance()->loadDir("media/room");
 
 	AnnEngine::Instance()->initResources();
 	AnnEngine::Instance()->oculusInit();
