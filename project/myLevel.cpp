@@ -39,7 +39,7 @@ void MyLevel::load()
 
 	
 	auto puck(addGameObject("puck.mesh"));
-	puck->setPos(0, 1, 0);
+	puck->setPos(0, -.7, .9);
 	puck->setUpPhysics(1, convexShape);
 	test = puck;
 	

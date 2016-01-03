@@ -10,4 +10,6 @@ public:
 
 private:
 	AnnGameObject* paddle;
+	float paddleSpeed;
+	float deadzone;
 };
