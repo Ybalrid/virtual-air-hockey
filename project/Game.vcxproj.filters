@@ -6,6 +6,8 @@
       <Filter>pch</Filter>
     </ClCompile>
     <ClCompile Include="myLevel.cpp" />
+    <ClCompile Include="PlayerPaddleAction.cpp" />
+    <ClCompile Include="KeyboardCommands.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -20,5 +22,7 @@
       <Filter>pch</Filter>
     </ClInclude>
     <ClInclude Include="myLevel.hpp" />
+    <ClInclude Include="PlayerPaddleAction.hpp" />
+    <ClInclude Include="KeyboardCommands.hpp" />
   </ItemGroup>
 </Project>

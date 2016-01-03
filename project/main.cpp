@@ -9,6 +9,9 @@ using namespace Annwvyn;
 //Include our level/stages here
 #include "myLevel.hpp"
 
+#include "KeyboardCommands.hpp"
+
+
 AnnMain() //The application entry point is "AnnMain()". return type int.
 {
 	//Initialize the engine
@@ -28,6 +31,9 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 
 	//If the player has to folow the integrated physics scheme
 	AnnEngine::Instance()->initPlayerPhysics();
+	//AnnEngine::Instance()->useDefaultEventListener();
+	AnnEngine::Instance()->getEventManager()->addListener(new KeyboardCommands);
+
 	//Do the other initialization herttEventListener(); //Basic events
 
 	//Intentiate and register our basic level
@@ -40,7 +46,6 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	AnnEngine::Instance()->resetOculusOrientation();
 	
 	//The game is rendering here now:
-	AnnEngine::Instance()->useDefaultEventListener();
 	AnnEngine::Instance()->startGameplayLoop();
 
 

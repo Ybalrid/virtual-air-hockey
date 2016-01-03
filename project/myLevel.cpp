@@ -3,8 +3,9 @@
 
 AnnGameObject* test = nullptr;
 
-MyLevel::MyLevel() : AnnAbstractLevel()
-{
+MyLevel::MyLevel() : AnnAbstractLevel(),
+	playerPaddleActor(nullptr)
+{ 
 }
 
 void MyLevel::load()
@@ -48,6 +49,7 @@ void MyLevel::load()
 	paddle->setPos(0, 0, 1);
 	paddle->setScale(0.25,0.25,0.25);
 	paddle->setUpPhysics(1, convexShape);
+	playerPaddleActor = new PlayerPaddleAction(paddle);
 	
 
 	auto Ground (engine->createGameObject("room.mesh"));
@@ -66,11 +68,17 @@ void MyLevel::load()
 
 	engine->resetPlayerPhysics();
 
+	engine->getEventManager()->addListener(playerPaddleActor);
+}
+
+void MyLevel::unload()
+{
+	AnnAbstractLevel::unload();
+	AnnEngine::Instance()->getEventManager()->removeListener(playerPaddleActor);
+	delete playerPaddleActor;
 }
 
 void MyLevel::runLogic()
 {
-	if(test)
-	AnnDebug() << test->pos();
-	AnnDebug() << "player : " << AnnEngine::Instance()->getPlayer()->getPosition();
+	
 }

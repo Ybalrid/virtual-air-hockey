@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="KeyboardCommands.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myLevel.cpp" />
     <ClCompile Include="pch\stdafx.cpp">
@@ -27,13 +28,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PlayerPaddleAction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="KeyboardCommands.hpp" />
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="pch\stdafx.h" />
+    <ClInclude Include="PlayerPaddleAction.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FF00A220-BA2F-45E4-8335-A7ACCACD0F1B}</ProjectGuid>
@@ -182,6 +186,10 @@
       <PreventDllBinding>false</PreventDllBinding>
       <AdditionalDependencies>Annwvyn.lib;ws2_32.lib;OgreMain.lib;OIS.lib;LibOVR.lib;Winmm.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;OpenAL32.lib;libsndfile-1.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Getting Annwvyn Dynamic Library from the SDK...
+copy /y  %AnnwvynSDK64%\Annwvyn\lib\Annwvyn.dll Annwvyn.dll</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
