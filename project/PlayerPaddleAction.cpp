@@ -3,8 +3,9 @@
 
 using namespace Annwvyn;
 
-PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle) : constructListener(), 
+PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* tablePuck) : constructListener(), 
 	paddle(playerPaddle),
+	puck(tablePuck),
 	paddleSpeed(3.f),
 	deadzone(0.20f)
 {
@@ -13,6 +14,11 @@ PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle) : constructL
 
 void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 {
+	if(e.isPressed() && e.getKey() == KeyCode::space)
+	{
+		puck->setPos(0, -1.1, .8);
+		puck->setOrientation(AnnQuaternion::IDENTITY);
+	}
 }
 
 //If a gamepad is present, this method will be called at each frame:

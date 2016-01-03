@@ -39,17 +39,17 @@ void MyLevel::load()
 
 	
 	auto puck(addGameObject("puck.mesh"));
-	puck->setPos(0, -.7, .8);
+	puck->setPos(0, -1.1, .8);
 	puck->setUpPhysics(1, convexShape);
 	test = puck;
 	
 
 
 	auto paddle(addGameObject("paddle.mesh"));
-	paddle->setPos(0, -.70, 1.05);
+	paddle->setPos(0, -1.1, 1.05);
 	paddle->setScale(0.25,0.25,0.25);
 	paddle->setUpPhysics(1, convexShape);
-	playerPaddleActor = new PlayerPaddleAction(paddle);
+	playerPaddleActor = new PlayerPaddleAction(paddle, puck);
 	
 
 	auto Ground (engine->createGameObject("room.mesh"));
