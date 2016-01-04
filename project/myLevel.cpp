@@ -58,7 +58,7 @@ void MyLevel::load()
 	levelContent.push_back(Ground);
 
 
-	engine->setAmbiantLight(Ogre::ColourValue(0.4,0.4,0.4));
+	//engine->setAmbiantLight(Ogre::ColourValue(0.4,0.4,0.4));
 	engine->getPlayer()->setPosition(AnnVect3(0,-1,1.7));
 
 	//Add light source directly over the table	

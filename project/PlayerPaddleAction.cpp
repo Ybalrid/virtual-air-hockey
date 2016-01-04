@@ -92,6 +92,14 @@ void PlayerPaddleAction::StickEvent(AnnStickEvent e)
 
 	inputVelocity *= paddleSpeed;
 	//AnnDebug() << "input velocity is : " << inputVelocity;
+	
+	//If button 0 (Xbox A) is currently pressed
+	if(e.isPressed(0))
+	{
+		//Reset position/orientation of the puck
+		puck->setPos(0, -1.1, .8);
+		puck->setOrientation(AnnQuaternion::IDENTITY);
+	}
 
 	
 }
