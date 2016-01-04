@@ -117,15 +117,13 @@ void PlayerPaddleAction::tick()
 
 	//Prevent the body to be "put to sleep" by the physics engine
 	paddle->getBody()->activate();
-		AnnVect3 currentVelocity(paddle->getBody()->getLinearVelocity());
-			inputVelocity.y = currentVelocity.y;
+	AnnVect3 currentVelocity(paddle->getBody()->getLinearVelocity());
+	if(currentVelocity.y <=0);
+		inputVelocity.y = currentVelocity.y;
 
 
 	paddle->setLinearSpeed(inputVelocity);
+	puck->setOrientation(AnnQuaternion::IDENTITY);
 
-		puck->setOrientation(AnnQuaternion::IDENTITY);
-
-		AnnDebug() << inputVelocity;
-
-
+	AnnDebug() << inputVelocity;
 }
