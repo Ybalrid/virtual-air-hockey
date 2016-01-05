@@ -17,5 +17,5 @@ private:
 	float paddleSpeed;
 	float deadzone;
 
-	AnnVect3 keyboradVelocity, inputVelocity;
+	AnnVect3 keyboardVelocity, stickVelocity, inputVelocity;
 };

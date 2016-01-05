@@ -10,8 +10,9 @@ PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObjec
 	deadzone(0.20f)
 {
 	AnnDebug() << "PLAYER PADDLE ACTION CREATED";
-	keyboradVelocity = AnnVect3::ZERO;
+	keyboardVelocity = AnnVect3::ZERO;
 	inputVelocity = AnnVect3::ZERO;
+	stickVelocity = AnnVect3::ZERO;
 }
 
 void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
@@ -23,16 +24,16 @@ void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 	{
 	default: break;
 	case KeyCode::up:
-		keyboradVelocity.z = -1;
+		keyboardVelocity.z = -1;
 		break;
 	case KeyCode::down:
-		keyboradVelocity.z = 1;
+		keyboardVelocity.z = 1;
 		break;
 	case KeyCode::left:
-		keyboradVelocity.x = -1;
+		keyboardVelocity.x = -1;
 		break;
 	case KeyCode::right:
-		keyboradVelocity.x = 1;
+		keyboardVelocity.x = 1;
 		break;
 	}
 
@@ -40,58 +41,54 @@ void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 	{
 	default: break;
 	case KeyCode::up:
-		keyboradVelocity.z = 0;
+		keyboardVelocity.z = 0;
 		break;
 	case KeyCode::down:
-		keyboradVelocity.z = 0;
+		keyboardVelocity.z = 0;
 		break;
 	case KeyCode::left:
-		keyboradVelocity.x = 0;
+		keyboardVelocity.x = 0;
 		break;
 	case KeyCode::right:
-		keyboradVelocity.x = 0;
+		keyboardVelocity.x = 0;
 		break;
 	}
+	
 
-	if(!keyboradVelocity.isZeroLength())
-		keyboradVelocity.normalise();
-
-		AnnVect3 currentVelocity(paddle->getBody()->getLinearVelocity());
-		keyboradVelocity.y = currentVelocity.y;
-		keyboradVelocity*=paddleSpeed;
-
-
-	 //inputVelocity=(keyboradVelocity);
-
-
+	if(!keyboardVelocity.isZeroLength())
+		keyboardVelocity.normalise();
+	keyboardVelocity *= paddleSpeed;
 }
 
 //If a gamepad is present, this method will be called at each frame:
 void PlayerPaddleAction::StickEvent(AnnStickEvent e)
 {
-	inputVelocity = AnnVect3::ZERO;
+	stickVelocity = AnnVect3::ZERO;
 	AnnStickAxis horiz = e.getAxis(0);
 	AnnStickAxis vert = e.getAxis(1);	
 
 	//Calculate the normal velocity vector the object should have thanks to the 2 dimentional analog input
-	inputVelocity= AnnVect3(vert.getAbsValue(), 0, horiz.getAbsValue());
+	stickVelocity= AnnVect3(vert.getAbsValue(), 0, horiz.getAbsValue());
 
-	inputVelocity.x = trim(inputVelocity.x, deadzone);
-	inputVelocity.z = trim(inputVelocity.z, deadzone);
+	stickVelocity.x = trim(stickVelocity.x, deadzone);
+	stickVelocity.z = trim(stickVelocity.z, deadzone);
 	
-	if(!inputVelocity.isZeroLength())
-		inputVelocity.normalise();
+	if(!stickVelocity.isZeroLength())
+		stickVelocity.normalise();
 
-	inputVelocity *= paddleSpeed;
+	stickVelocity *= paddleSpeed;
 	
 	//If button 0 (Xbox A) is currently pressed
 	if(e.isPressed(0)) resetPuck();//Reset position/orientation of the puck	
 }
 void PlayerPaddleAction::tick()
 {
-	if(inputVelocity.isZeroLength() && !keyboradVelocity.isZeroLength())
-		inputVelocity = keyboradVelocity;
+	if(stickVelocity.isZeroLength() && !keyboardVelocity.isZeroLength())
+		inputVelocity = keyboardVelocity;
+	else
+		inputVelocity = stickVelocity;
 
+	//Prevent the paddle to be out of the table
 	if((paddle->pos().x < -0.70 && inputVelocity.x < 0) 
 		|| (paddle->pos().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
 
