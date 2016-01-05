@@ -9,6 +9,9 @@ public:
 	void KeyEvent(AnnKeyEvent e);
 	void tick();
 
+
+	void resetPuck();
+
 private:
 	AnnGameObject* paddle, *puck;
 	float paddleSpeed;

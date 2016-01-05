@@ -17,11 +17,8 @@ PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObjec
 void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 {
 	if(e.isPressed() && e.getKey() == KeyCode::space)
-	{
-		puck->setPos(0, -1.1, .8);
-		puck->setOrientation(AnnQuaternion::IDENTITY);
-	}
-	/*
+		resetPuck();
+
 	if(e.isPressed()) switch (e.getKey())
 	{
 	default: break;
@@ -64,8 +61,8 @@ void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 		keyboradVelocity*=paddleSpeed;
 
 
-	 inputVelocity=(keyboradVelocity);
-	*/
+	 //inputVelocity=(keyboradVelocity);
+
 
 }
 
@@ -74,15 +71,10 @@ void PlayerPaddleAction::StickEvent(AnnStickEvent e)
 {
 	inputVelocity = AnnVect3::ZERO;
 	AnnStickAxis horiz = e.getAxis(0);
-	AnnStickAxis vert = e.getAxis(1);
-
-	AnnDebug() << "Player axis : " << horiz.getAbsValue() << " & "<< vert.getAbsValue(); 
-	
+	AnnStickAxis vert = e.getAxis(1);	
 
 	//Calculate the normal velocity vector the object should have thanks to the 2 dimentional analog input
-	 inputVelocity= AnnVect3(vert.getAbsValue(), 0, horiz.getAbsValue());
-	 AnnDebug() << "Raw stick value : " << inputVelocity;
-
+	inputVelocity= AnnVect3(vert.getAbsValue(), 0, horiz.getAbsValue());
 
 	inputVelocity.x = trim(inputVelocity.x, deadzone);
 	inputVelocity.z = trim(inputVelocity.z, deadzone);
@@ -91,21 +83,15 @@ void PlayerPaddleAction::StickEvent(AnnStickEvent e)
 		inputVelocity.normalise();
 
 	inputVelocity *= paddleSpeed;
-	//AnnDebug() << "input velocity is : " << inputVelocity;
 	
 	//If button 0 (Xbox A) is currently pressed
-	if(e.isPressed(0))
-	{
-		//Reset position/orientation of the puck
-		puck->setPos(0, -1.1, .8);
-		puck->setOrientation(AnnQuaternion::IDENTITY);
-	}
-
-	
+	if(e.isPressed(0)) resetPuck();//Reset position/orientation of the puck	
 }
 void PlayerPaddleAction::tick()
 {
-		
+	if(inputVelocity.isZeroLength() && !keyboradVelocity.isZeroLength())
+		inputVelocity = keyboradVelocity;
+
 	if((paddle->pos().x < -0.70 && inputVelocity.x < 0) 
 		|| (paddle->pos().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
 
@@ -118,12 +104,17 @@ void PlayerPaddleAction::tick()
 	//Prevent the body to be "put to sleep" by the physics engine
 	paddle->getBody()->activate();
 	AnnVect3 currentVelocity(paddle->getBody()->getLinearVelocity());
-	if(currentVelocity.y <=0);
+	if(currentVelocity.y <=0)
 		inputVelocity.y = currentVelocity.y;
-
 
 	paddle->setLinearSpeed(inputVelocity);
 	puck->setOrientation(AnnQuaternion::IDENTITY);
+}
 
-	AnnDebug() << inputVelocity;
+
+void PlayerPaddleAction::resetPuck()
+{
+	puck->setPos(0, -1.1, .8);
+	puck->setOrientation(AnnQuaternion::IDENTITY);
+	puck->setLinearSpeed(AnnVect3::ZERO);
 }
