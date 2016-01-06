@@ -59,12 +59,15 @@ private:
 	void test();
 
 private:
-	FalconDevice falcon;
-	FalconEncoder encoder;
+	FalconDevice falcon;	//libnifalcon device
+	FalconEncoder encoder;	//raw encoder value
 	FalconVect3 origin, force, position, zero;
-	static FalconController* singleton;
-	ostream& logger;
-	int ledstate;
+	ostream& logger;		//outputstream where this class will write log
+	int ledstate;			//bitmask of the falcon's LEDs
+
+
+	static FalconController* singleton; 
+
 };
 
 #endif //FALCON_CONTROLLER
