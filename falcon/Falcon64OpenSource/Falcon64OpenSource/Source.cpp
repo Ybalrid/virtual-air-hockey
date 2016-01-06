@@ -1,27 +1,50 @@
 #include <iostream>
-#include <falcon/core/FalconDevice.h>
-#include <falcon/grip/FalconGripFourButton.h>
-#include <falcon/firmware/FalconFirmwareNovintSDK.h>
-#include <falcon/util/FalconFirmwareBinaryNvent.h>
-#include <falcon/kinematic/stamper/StamperUtils.h>
-#include <falcon/core/FalconGeometry.h>
-#include <falcon/gmtl/gmtl.h>
 
-#include "falcon/kinematic/FalconKinematicStamper.h"
 
+#include <cassert>
+#include <Windows.h>
+
+#include "FalconController.hpp"
 
 using namespace std;
-using namespace libnifalcon;
-using namespace StamperKinematicImpl;
 
 void pause()
 {
 	cout << "press RETURN" << endl; cin.get();
 }
 
+FalconController::FalconVect3 testForce = {0, 0, 10};
+
 int main()
 {
-			cout.precision(5);
+	auto Falcon(new FalconController);
+	pause();
+	while(true)
+	{
+		system("cls");
+		FalconController::FalconVect3 v =  Falcon->getPosition();
+		cout << "Position : (" 
+			<< fixed << v[0] << ", " 
+			<< fixed << v[1] << ", " 
+			<< fixed << v[2] << ")"
+			<< endl;
+
+		if(Falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
+			Falcon->setForce(testForce);
+		else
+			Falcon->setZeroForce();
+
+		Sleep((1.0f/60.0f)*1000);//simulate DK1 framerate
+		Falcon->update();
+	}
+	pause();
+	delete Falcon;
+	return 0;
+}
+
+int oldmain()
+{
+	cout.precision(5);
 
 	FalconDevice falcon;
 	falcon.setFalconFirmware<FalconFirmwareNovintSDK>();
@@ -68,13 +91,6 @@ int main()
 
 				{
 					cout << "Firmware loading try failed";
-					//Completely close and reopen
-					//falcon.close();
-					//if(!falcon.open(m_varMap["device_index"].as<int>()))
-					//{
-					//	std::cout << "Cannot open falcon device index " << m_varMap["device_index"].as<int>() << " - Lib Error Code: " << m_falconDevice->getErrorCode() << " Device Error Code: " << m_falconDevice->getFalconComm()->getDeviceErrorCode() << std::endl;
-					//	return false;
-					//}
 				}
 				else
 				{
@@ -86,17 +102,7 @@ int main()
 	}
 	else if(!firmware_loaded)
 	{
-		std::cout << "No firmware loaded to device, and no firmware specified to load (--nvent_firmware, --test_firmware, etc...). Cannot continue" << std::endl;
-		//return false;
-	}
-	else
-	{
-		//return true;
-	}
-	if(!firmware_loaded || !falcon.isFirmwareLoaded())
-	{
-		//std::cout << "No firmware loaded to device, cannot continue" << std::endl;
-		//return false;
+		std::cout << "No firmware loaded to device" << std::endl;
 	}
 	std::cout << "Firmware loaded" << std::endl;
 
@@ -145,11 +151,7 @@ int main()
 			falcon.setForce(zero);
 		encoderPos = falcon.getFalconFirmware()->getEncoderValues();
 		falcon.getFalconKinematic()->getPosition(encoderPos, vector3);
-		/*cout << "Falcon Encoder value : ("  
-			<<  encoderPos[0] << ", "
-			<<  encoderPos[1] << ", "
-			<<  encoderPos[2] << ")"
-			<< endl;*/
+		
 		cout << "Falcon kinematic position : ("  
 			<< fixed << vector3[0] - origin[0] << ", "
 			<< fixed << vector3[1] - origin[1] << ", "
