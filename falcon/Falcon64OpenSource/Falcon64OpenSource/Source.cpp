@@ -22,7 +22,7 @@ int main()
 	pause();
 	while(true)
 	{
-		system("cls");
+		//system("cls");
 		FalconController::FalconVect3 v =  Falcon->getPosition();
 		cout << "Position : (" 
 			<< fixed << v[0] << ", " 
@@ -31,9 +31,9 @@ int main()
 			<< endl;
 
 		/*if(Falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
-			Falcon->setForce(testForce);
+		Falcon->setForce(testForce);
 		else
-			Falcon->setZeroForce();*/
+		Falcon->setZeroForce();*/
 
 		FalconController::FalconVect3 force = {0, 0, 0};
 		force[2] = (+0.07-v[2])*100;
@@ -79,7 +79,7 @@ int oldmain()
 	}
 
 
-		
+
 	bool skip_checksum = false;
 	//See if we have firmware
 	bool firmware_loaded = false;
@@ -128,9 +128,9 @@ int oldmain()
 	falcon.getFalconKinematic()->getWorkspaceOrigin(origin);
 	cout << "Origin is : ";
 	cout << fixed << origin[0] << ", "
-		 << fixed << origin[1] << ", "
-		 << fixed << origin[2] << ")"
-		 << endl;
+		<< fixed << origin[1] << ", "
+		<< fixed << origin[2] << ")"
+		<< endl;
 	pause();
 
 	cout << "led should be red" << endl;
@@ -161,7 +161,7 @@ int oldmain()
 			falcon.setForce(zero);
 		encoderPos = falcon.getFalconFirmware()->getEncoderValues();
 		falcon.getFalconKinematic()->getPosition(encoderPos, vector3);
-		
+
 		cout << "Falcon kinematic position : ("  
 			<< fixed << vector3[0] - origin[0] << ", "
 			<< fixed << vector3[1] - origin[1] << ", "
