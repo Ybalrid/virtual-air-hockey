@@ -24,27 +24,39 @@ public:
 	enum FalconGripButton {RIGHT, UP, PRINCIPAL, LEFT};
 	enum FalconLED {RED, GREEN, BLUE};
 
+	///Construct a Falcon Controller object
 	FalconController(ostream& logStream = cout) :
-		logger(logStream)
+		logger(logStream),
+		ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED)
 	{
 		if(singleton)
 		{
 			logger << "You cannot create more than one FalconController!" << endl;
+			exit(-1);
 		}
 		initialize();
 		singleton = this;
 		zero[0] = 0;
 		zero[1] = 0;
 		zero[2] = 0;
+		falcon.getFalconFirmware()->setLEDStatus(ledstate);
 		update();
 	}
 
+	///return the address of the instancied singleton
+	FalconController* getSingleton()
+	{
+		return singleton;
+	}
+	
+	///Destroy the falcon controller object and reset the static singleton
 	~FalconController()
 	{
 		singleton = nullptr;
 		if(falcon.isOpen()) falcon.close();
 	}
 
+	///Run the IO update and get most recent motor encoder values
 	void update()
 	{
 		falcon.runIOLoop();
@@ -52,29 +64,61 @@ public:
 		//test();
 	}
 
+	///Get the position with origin offset applied (as a std::array of 3 doubles)
 	FalconVect3 getPosition()
 	{
 		falcon.getFalconKinematic()->getPosition(encoder, position);
+		for(size_t i(0); i < 3; i++) position[i] -= origin[i];
 		return position;
 	}
 
+	///Set the force exerced to the player hand (vector3 as a std::array of 3 doubles)
 	void setForce(FalconVect3 f)
 	{
 		force = f;
 		falcon.setForce(force);
 	}
 
+	///Reset the force to (0,0,0);
 	void setZeroForce()
 	{
 		setForce(zero);
 	}
 
+	///Get if the specified button is down or not
 	bool getButtonState(FalconGripButton button)
 	{
 		return falcon.getFalconGrip()->getDigitalInput(static_cast<unsigned int>(button));
 	}
 
+	///Set on or off the wanted LED
+	void setLED(FalconLED led, bool state = true)
+	{
+		int theLed;
+		switch(led)
+		{
+		case RED:
+			theLed =  FalconFirmware::RED_LED;
+			break;
+		case GREEN:
+			theLed =  FalconFirmware::GREEN_LED;
+			break;
+		case BLUE:
+			theLed = FalconFirmware::BLUE_LED;
+			break;
+		}
+
+		if(state)
+			ledstate |= theLed;
+		else
+			ledstate &= ~theLed;
+
+		falcon.getFalconFirmware()->setLEDStatus(ledstate);
+	}
+
 private:
+
+	///Run the device initialisation (firmware loading, grip and kinematics declaration, etc...)
 	bool initialize()
 	{
 		logger << "Init falcon controller" << endl;
@@ -160,6 +204,8 @@ private:
 
 		return true;
 	}
+
+	///Just for testing stuff during the developement of this class
 	void test()
 	{
 		for(int i(0);  i < 4; i++)
@@ -171,6 +217,8 @@ private:
 	FalconVect3 origin, force, position, zero;
 	static FalconController* singleton;
 	ostream& logger;
+
+	int ledstate;
 };
 FalconController* FalconController::singleton(nullptr);
 

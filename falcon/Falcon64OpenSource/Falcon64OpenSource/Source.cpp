@@ -13,10 +13,11 @@ void pause()
 	cout << "press RETURN" << endl; cin.get();
 }
 
-FalconController::FalconVect3 testForce = {0, 0, 10};
+FalconController::FalconVect3 testForce = {0, 0, 20};
 
 int main()
 {
+	cout.precision(8);
 	auto Falcon(new FalconController);
 	pause();
 	while(true)
@@ -29,12 +30,21 @@ int main()
 			<< fixed << v[2] << ")"
 			<< endl;
 
-		if(Falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
+		/*if(Falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
 			Falcon->setForce(testForce);
 		else
-			Falcon->setZeroForce();
+			Falcon->setZeroForce();*/
 
-		Sleep((1.0f/60.0f)*1000);//simulate DK1 framerate
+		FalconController::FalconVect3 force = {0, 0, 0};
+		force[2] = (+0.07-v[2])*100;
+		Falcon->setForce(force);
+
+		cout << "Spring extent : " << fixed <<  0.02-v[2] << endl;
+		cout << "Force : F=(" << fixed << force[0] << ", " << fixed << force[1] << ", " << fixed << force[2] << ")"  << endl;
+
+		//Sleep((1.0f/60.0f)*1000);//simulate DK1 framerate
+		Falcon->setLED(FalconController::BLUE);
+
 		Falcon->update();
 	}
 	pause();
