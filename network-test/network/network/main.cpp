@@ -19,6 +19,8 @@ int main(void)
 	cout << "Try to create an asio io_service : "
 		<< endl;
 	asio::io_service io_service;
+
+
 	
 	cout << "Okay, if this line is on the terminal, It means that it's working..."
 		  << endl;
