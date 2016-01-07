@@ -5,8 +5,6 @@ using namespace libnifalcon;
 using namespace StamperKinematicImpl;
 FalconController* FalconController::singleton(nullptr);
 
-
-
 FalconController::FalconController(ostream& logStream) :
 	logger(logStream),
 	ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED)
@@ -16,7 +14,11 @@ FalconController::FalconController(ostream& logStream) :
 		logger << "You cannot create more than one FalconController!" << endl;
 		exit(-1);
 	}
-	initialize();
+	if(!initialize())
+	{
+		logger << "Error during FalconController initialization" << endl;
+		exit(-2);
+	}
 	singleton = this;
 	zero[0] = 0;
 	zero[1] = 0;
