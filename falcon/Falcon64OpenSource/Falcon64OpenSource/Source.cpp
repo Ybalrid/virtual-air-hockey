@@ -1,7 +1,4 @@
 #include <iostream>
-
-
-#include <cassert>
 #include <Windows.h>
 
 #include "FalconController.hpp"
@@ -36,14 +33,16 @@ int main()
 		Falcon->setZeroForce();*/
 
 		FalconController::FalconVect3 force = {0, 0, 0};
-		force[2] = (+0.07-v[2])*100;
+		force[2] = (+0.07-v[2])*50;
 		Falcon->setForce(force);
 
 		cout << "Spring extent : " << fixed <<  0.02-v[2] << endl;
 		cout << "Force : F=(" << fixed << force[0] << ", " << fixed << force[1] << ", " << fixed << force[2] << ")"  << endl;
 
 		//Sleep((1.0f/60.0f)*1000);//simulate DK1 framerate
-		Falcon->setLED(FalconController::BLUE);
+		Falcon->setLED(FalconController::RED,Falcon->getButtonState(FalconController::LEFT));
+		Falcon->setLED(FalconController::GREEN,Falcon->getButtonState(FalconController::UP));
+		Falcon->setLED(FalconController::BLUE,Falcon->getButtonState(FalconController::RIGHT));
 
 		Falcon->update();
 	}
