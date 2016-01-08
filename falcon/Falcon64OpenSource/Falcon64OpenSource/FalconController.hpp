@@ -10,7 +10,7 @@
 #include <falcon/gmtl/gmtl.h>
 #include <falcon/kinematic/FalconKinematicStamper.h>
 #include <iostream>
-
+#include <Windows.h>
 
 using namespace std;
 using namespace libnifalcon;
@@ -55,12 +55,16 @@ public:
 	///Return true if FalconController is initialized()
 	bool isInitialized();
 
+	void startUpdateThread();
+
 private:
 	///Run the device initialisation (firmware loading, grip and kinematics declaration, etc...)
 	bool initialize();
 
 	///Just for testing stuff during the developement of this class
 	void test();
+
+	static DWORD WINAPI UpdateThread(LPVOID pointerToFalconInitializedFalconController);
 
 	
 

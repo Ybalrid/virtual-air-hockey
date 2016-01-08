@@ -43,9 +43,15 @@ FalconController::~FalconController()
 ///Run the IO update and get most recent motor encoder values
 void FalconController::update()
 {
-	if(!isInitialized())return;
+	if(!isInitialized())
+	{
+		logger << "Update call on unitialized FalconController" << endl;
+		return;
+	}
 	falcon.runIOLoop();
 	encoder = falcon.getFalconFirmware()->getEncoderValues();
+
+	logger << "Encoder values updated" << endl;
 	//test();
 }
 
@@ -207,4 +213,15 @@ void FalconController::test()
 bool FalconController::isInitialized()
 {
 	return initialized;
+}
+
+DWORD WINAPI FalconController::UpdateThread(LPVOID address)
+{
+	FalconController* Falcon = static_cast<FalconController*>(address);
+	while(true) Falcon->update();
+}
+
+void FalconController::startUpdateThread()
+{
+	CreateThread(NULL, 0, FalconController::UpdateThread, this, 0, NULL);
 }
