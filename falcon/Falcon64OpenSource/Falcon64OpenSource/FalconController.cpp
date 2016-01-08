@@ -8,7 +8,9 @@ FalconController* FalconController::singleton(nullptr);
 FalconController::FalconController(ostream& logStream) :
 	logger(logStream),
 	ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED),
-	initialized(false)
+	initialized(false),
+	encoderMutex(nullptr),
+	threadStarted(false)
 {
 	if(singleton)
 	{
@@ -49,9 +51,18 @@ void FalconController::update()
 		return;
 	}
 	falcon.runIOLoop();
+
+	//Wait for mutex to be released
+	if(threadStarted && encoderMutex)
+		WaitForSingleObject(encoderMutex, INFINITE);
+
 	encoder = falcon.getFalconFirmware()->getEncoderValues();
 
-	logger << "Encoder values updated" << endl;
+	//Release the mutex ourselves
+	if(threadStarted && encoderMutex)
+		ReleaseMutex(encoderMutex);
+
+	logger << "Encoder values updated" << endl;	
 	//test();
 }
 
@@ -59,7 +70,17 @@ void FalconController::update()
 FalconController::FalconVect3 FalconController::getPosition()
 {
 	if(!isInitialized()) return zero;
+
+	//Wait for mutex to be released
+	if(threadStarted && encoderMutex)
+		WaitForSingleObject(encoderMutex, INFINITE);
+	
 	falcon.getFalconKinematic()->getPosition(encoder, position);
+	
+	//Release the mutex ourselves
+	if(threadStarted && encoderMutex)
+		ReleaseMutex(encoderMutex);
+
 	for(size_t i(0); i < 3; i++) position[i] -= origin[i];
 	return position;
 }
@@ -218,10 +239,21 @@ bool FalconController::isInitialized()
 DWORD WINAPI FalconController::UpdateThread(LPVOID address)
 {
 	FalconController* Falcon = static_cast<FalconController*>(address);
-	while(true) Falcon->update();
+	while(true) 
+	{
+		WaitForSingleObject(Falcon->encoderMutex, INFINITE);
+		Falcon->update();
+		ReleaseMutex(Falcon->encoderMutex);
+		Sleep(1);
+	}
 }
 
 void FalconController::startUpdateThread()
 {
 	CreateThread(NULL, 0, FalconController::UpdateThread, this, 0, NULL);
+	encoderMutex = CreateMutex(NULL, FALSE, NULL);
+	if(encoderMutex)
+		logger << "Mutex Created" << endl;
+	else
+		logger << "Error with Mutex" << endl;
 }

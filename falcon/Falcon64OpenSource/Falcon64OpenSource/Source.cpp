@@ -65,7 +65,7 @@ int main()
 		Falcon->setLED(FalconController::BLUE,Falcon->getButtonState(FalconController::RIGHT));
 
 		//Falcon->update();
-		//Sleep(static_cast<unsigned int>(1000/60));
+		Sleep(1000/60);
 	}
 //	else
 	//	cout << "The novint Falcon hasn't been initialized properly. Check USB connexion " << endl;

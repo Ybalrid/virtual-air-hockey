@@ -79,6 +79,10 @@ private:
 	static FalconController* singleton; 
 
 	bool initialized;
+	bool threadStarted;
+
+	//Threading
+	HANDLE encoderMutex;
 
 };
 
