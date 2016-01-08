@@ -11,6 +11,7 @@
 #include <falcon/kinematic/FalconKinematicStamper.h>
 #include <iostream>
 
+
 using namespace std;
 using namespace libnifalcon;
 using namespace StamperKinematicImpl;
@@ -51,12 +52,17 @@ public:
 	///Set on or off the wanted LED
 	void setLED(FalconLED led, bool state = true);
 
+	///Return true if FalconController is initialized()
+	bool isInitialized();
+
 private:
 	///Run the device initialisation (firmware loading, grip and kinematics declaration, etc...)
 	bool initialize();
 
 	///Just for testing stuff during the developement of this class
 	void test();
+
+	
 
 private:
 	FalconDevice falcon;	//libnifalcon device
@@ -67,6 +73,8 @@ private:
 
 
 	static FalconController* singleton; 
+
+	bool initialized;
 
 };
 

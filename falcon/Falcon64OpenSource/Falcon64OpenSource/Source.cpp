@@ -17,6 +17,7 @@ int main()
 	cout.precision(8);
 	auto Falcon(new FalconController);
 	pause();
+	if(Falcon->isInitialized())
 	while(true)
 	{
 		//system("cls");
@@ -45,7 +46,10 @@ int main()
 		Falcon->setLED(FalconController::BLUE,Falcon->getButtonState(FalconController::RIGHT));
 
 		Falcon->update();
+		//Sleep(static_cast<unsigned int>(1000.0f/60.0f));
 	}
+	else
+		cout << "The novint Falcon hasn't been initialized properly. Check USB connexion " << endl;
 	pause();
 	delete Falcon;
 	return 0;

@@ -7,17 +7,17 @@ FalconController* FalconController::singleton(nullptr);
 
 FalconController::FalconController(ostream& logStream) :
 	logger(logStream),
-	ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED)
+	ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED),
+	initialized(false)
 {
 	if(singleton)
 	{
 		logger << "You cannot create more than one FalconController!" << endl;
 		exit(-1);
 	}
-	if(!initialize())
+	if(!(initialized=initialize()))
 	{
 		logger << "Error during FalconController initialization" << endl;
-		exit(-2);
 	}
 	singleton = this;
 	zero[0] = 0;
@@ -43,6 +43,7 @@ FalconController::~FalconController()
 ///Run the IO update and get most recent motor encoder values
 void FalconController::update()
 {
+	if(!isInitialized())return;
 	falcon.runIOLoop();
 	encoder = falcon.getFalconFirmware()->getEncoderValues();
 	//test();
@@ -51,6 +52,7 @@ void FalconController::update()
 ///Get the position with origin offset applied (as a std::array of 3 doubles)
 FalconController::FalconVect3 FalconController::getPosition()
 {
+	if(!isInitialized()) return zero;
 	falcon.getFalconKinematic()->getPosition(encoder, position);
 	for(size_t i(0); i < 3; i++) position[i] -= origin[i];
 	return position;
@@ -72,12 +74,14 @@ void FalconController::setZeroForce()
 ///Get if the specified button is down or not
 bool FalconController::getButtonState(FalconGripButton button)
 {
+	if(!isInitialized()) return false;
 	return falcon.getFalconGrip()->getDigitalInput(static_cast<unsigned int>(button));
 }
 
 ///Set on or off the wanted LED
 void FalconController::setLED(FalconLED led, bool state)
 {
+	if(!isInitialized()) return;
 	int theLed;
 	switch(led)
 	{
@@ -105,6 +109,11 @@ void FalconController::setLED(FalconLED led, bool state)
 ///Run the device initialisation (firmware loading, grip and kinematics declaration, etc...)
 bool FalconController::initialize()
 {
+	if(isInitialized())
+	{
+		logger << "The Novint Falcon has allready been initialized. Will do nothing." << endl;
+		return true;
+	}
 	logger << "Init falcon controller" << endl;
 
 	falcon.setFalconFirmware<FalconFirmwareNovintSDK>();
@@ -158,8 +167,8 @@ bool FalconController::initialize()
 	}
 	else if(!firmware_loaded)
 	{
-		std::cout << "No firmware loaded to device, and no firmware specified to load (--nvent_firmware, --test_firmware, etc...). Cannot continue" << std::endl;
-		//return false;
+		std::cout << "No firmware loaded to device" << std::endl;
+		return false;
 	}
 	else
 	{
@@ -189,9 +198,13 @@ bool FalconController::initialize()
 	return true;
 }
 
-///Just for testing stuff during the developement of this class
 void FalconController::test()
 {
 	for(int i(0);  i < 4; i++)
 		logger << "digital " << i << " = " << falcon.getFalconGrip()->getDigitalInput(i) << endl;
+}
+
+bool FalconController::isInitialized()
+{
+	return initialized;
 }
