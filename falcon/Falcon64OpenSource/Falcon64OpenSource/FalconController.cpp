@@ -40,7 +40,8 @@ FalconController* FalconController::getSingleton()
 FalconController::~FalconController()
 {
 	singleton = nullptr;
-	TerminateThread(thread, NULL);
+	if(threadStarted)
+		TerminateThread(thread, NULL);
 
 	if(falcon.isOpen()) falcon.close();
 }
