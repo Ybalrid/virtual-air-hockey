@@ -36,8 +36,8 @@ int main()
 	pause();
 
 	Falcon->startUpdateThread();
-
-	while(true)
+	
+	int i(60*10); while(i-- > 0) //Loop for 10 seconds
 	{
 		//system("cls");
 		FalconController::FalconVect3 v =  Falcon->getPosition();
@@ -70,10 +70,6 @@ int main()
 //	else
 	//	cout << "The novint Falcon hasn't been initialized properly. Check USB connexion " << endl;
 
-	tester* obj = new tester;
-
-	CreateThread(NULL, 0, threadFunction, obj, 0, NULL);
-	pause();
 
 	delete Falcon;
 	return 0;

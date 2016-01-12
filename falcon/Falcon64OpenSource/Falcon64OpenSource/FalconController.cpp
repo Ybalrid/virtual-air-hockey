@@ -10,6 +10,7 @@ FalconController::FalconController(ostream& logStream) :
 	ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED),
 	initialized(false),
 	encoderMutex(nullptr),
+	thread(nullptr),
 	threadStarted(false)
 {
 	if(singleton)
@@ -39,6 +40,8 @@ FalconController* FalconController::getSingleton()
 FalconController::~FalconController()
 {
 	singleton = nullptr;
+	TerminateThread(thread, NULL);
+
 	if(falcon.isOpen()) falcon.close();
 }
 
@@ -247,7 +250,7 @@ DWORD WINAPI FalconController::UpdateThread(LPVOID address)
 
 void FalconController::startUpdateThread()
 {
-	CreateThread(NULL, 0, FalconController::UpdateThread, this, 0, NULL);
+	thread = CreateThread(NULL, 0, FalconController::UpdateThread, this, 0, nullptr);
 	encoderMutex = CreateMutex(NULL, FALSE, NULL);
 	if(encoderMutex)
 		logger << "Mutex Created" << endl;
