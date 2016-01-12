@@ -9,10 +9,13 @@ public:
 	void KeyEvent(AnnKeyEvent e);
 	void tick();
 
+
+	void resetPuck();
+
 private:
 	AnnGameObject* paddle, *puck;
 	float paddleSpeed;
 	float deadzone;
 
-	AnnVect3 keyboradVelocity, inputVelocity;
+	AnnVect3 keyboardVelocity, stickVelocity, inputVelocity;
 };

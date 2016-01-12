@@ -36,11 +36,13 @@ void MyLevel::load()
 	table->setPos(0, -1.5,0);
 	table->setScale(0.85,0.85,0.85);
 	table->setUpPhysics();
+	table->getBody()->setFriction(0);
 
 	
 	auto puck(addGameObject("puck.mesh"));
 	puck->setPos(0, -1.1, .8);
 	puck->setUpPhysics(1, convexShape);
+	puck->getBody()->setFriction(2);
 	
 
 
