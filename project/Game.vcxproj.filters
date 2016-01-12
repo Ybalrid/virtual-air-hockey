@@ -8,6 +8,7 @@
     <ClCompile Include="myLevel.cpp" />
     <ClCompile Include="PlayerPaddleAction.cpp" />
     <ClCompile Include="KeyboardCommands.cpp" />
+    <ClCompile Include="FalconController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -24,5 +25,6 @@
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="PlayerPaddleAction.hpp" />
     <ClInclude Include="KeyboardCommands.hpp" />
+    <ClInclude Include="FalconController.hpp" />
   </ItemGroup>
 </Project>

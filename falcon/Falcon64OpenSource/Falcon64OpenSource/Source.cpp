@@ -37,27 +37,41 @@ int main()
 
 	Falcon->startUpdateThread();
 	
-	int i(60*10); while(i-- > 0) //Loop for 10 seconds
+	int i(60*10); while(true) //Loop for 10 seconds
 	{
 		//system("cls");
 		FalconController::FalconVect3 v =  Falcon->getPosition();
-		cout << "Position : (" 
+		/*cout << "Position : (" 
 			<< fixed << v[0] << ", " 
 			<< fixed << v[1] << ", " 
 			<< fixed << v[2] << ")"
 			<< endl;
-
+			*/
 		/*if(Falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
 		Falcon->setForce(testForce);
 		else
 		Falcon->setZeroForce();*/
 
 		FalconController::FalconVect3 force = {0, 0, 0};
-		force[2] = (+0.07-v[2])*50;
-		Falcon->setForce(force);
+		//force[2] = (+0.07-v[2])*50;
+		//Falcon->setForce(force);
 
-		cout << "Spring extent : " << fixed <<  0.02-v[2] << endl;
-		cout << "Force : F=(" << fixed << force[0] << ", " << fixed << force[1] << ", " << fixed << force[2] << ")"  << endl;
+		float ytable = 0.01;
+		if(v[1] < ytable )
+		{
+			//https://surf-it.soe.ucsc.edu/sites/default/files/mason_report_0.pdf
+
+			force[1] = (ytable - v[1])*1500;
+			Falcon->setForce(force);
+			cout << "ground contact" << endl;
+		}
+		else
+		{
+			Falcon->setZeroForce();
+		}
+
+		//cout << "Spring extent : " << fixed <<  0.02-v[2] << endl;
+		//cout << "Force : F=(" << fixed << force[0] << ", " << fixed << force[1] << ", " << fixed << force[2] << ")"  << endl;
 
 		//Sleep((1.0f/60.0f)*1000);//simulate DK1 framerate
 		Falcon->setLED(FalconController::RED,Falcon->getButtonState(FalconController::LEFT));
@@ -65,7 +79,7 @@ int main()
 		Falcon->setLED(FalconController::BLUE,Falcon->getButtonState(FalconController::RIGHT));
 
 		//Falcon->update();
-		Sleep(1000/60);
+		//Sleep(1000/60);
 	}
 //	else
 	//	cout << "The novint Falcon hasn't been initialized properly. Check USB connexion " << endl;

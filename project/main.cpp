@@ -11,12 +11,22 @@ using namespace Annwvyn;
 
 #include "KeyboardCommands.hpp"
 
+#include "FalconController.hpp"
+
 
 AnnMain() //The application entry point is "AnnMain()". return type int.
 {
 	//Initialize the engine
 	AnnEngine::openConsole();
 	new AnnEngine("A game using Annwvyn");
+	
+	//Open a steam to AnnDebug and give it to the FalconClass
+	std::ostream* out(new AnnDebug());
+	
+	//Initialise FalconController
+	FalconController* Falcon = new FalconController(*out);
+	Falcon->startUpdateThread();
+
 	
 	//Load your ressources here
 
@@ -27,7 +37,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 
 	AnnEngine::Instance()->initResources();
 	AnnEngine::Instance()->oculusInit();
-	AnnEngine::Instance()->setDebugPhysicState(false);
+	AnnEngine::Instance()->setDebugPhysicState(true);
 
 	//If the player has to folow the integrated physics scheme
 	AnnEngine::Instance()->initPlayerPhysics();
@@ -51,6 +61,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 
 	//destroy the engine
 	//delete AnnEngine::Instance();
+	delete Falcon;
 	exit(EXIT_SUCCESS);
 }
 

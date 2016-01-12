@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "myLevel.hpp"
-
 AnnGameObject* test = nullptr;
 
 MyLevel::MyLevel() : AnnAbstractLevel(),
 	playerPaddleActor(nullptr)
 { 
 }
+
+
 
 void MyLevel::load()
 {
@@ -41,7 +42,7 @@ void MyLevel::load()
 	
 	auto puck(addGameObject("puck.mesh"));
 	puck->setPos(0, -1.1, .8);
-	puck->setUpPhysics(1, convexShape);
+	puck->setUpPhysics(1, phyShapeType::sphereShape);
 	puck->getBody()->setFriction(2);
 	
 
@@ -49,7 +50,7 @@ void MyLevel::load()
 	auto paddle(addGameObject("paddle.mesh"));
 	paddle->setPos(0, -1.1, 1.05);
 	paddle->setScale(0.25,0.25,0.25);
-	paddle->setUpPhysics(1, convexShape);
+	paddle->setUpPhysics(10, convexShape);
 	playerPaddleActor = new PlayerPaddleAction(paddle, puck);
 	test = paddle;	
 
@@ -84,4 +85,6 @@ void MyLevel::runLogic()
 	test->setOrientation(AnnQuaternion::IDENTITY);
 	btRigidBody* body;
 	if(body = test->getBody()) body->activate();
+	
+
 }

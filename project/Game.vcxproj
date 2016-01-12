@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FalconController.cpp" />
     <ClCompile Include="KeyboardCommands.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myLevel.cpp" />
@@ -34,6 +35,7 @@
     <None Include="plugins.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FalconController.hpp" />
     <ClInclude Include="KeyboardCommands.hpp" />
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="pch\stdafx.h" />
@@ -171,7 +173,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(AnnwvynSDK64)\Annwvyn\include;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\include\AL;$(AnnwvynSDK64)\libsndfile\include;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\OpenAL32\Include;$(AnnwvynSDK64)\OculusSDK\3rdParty\glext;$(AnnwvynSDK64)\OculusSDK\LibOVR\Src;$(AnnwvynSDK64)\OculusSDK\LibOVRKernel\Src;$(AnnwvynSDK64)\OculusSDK\LibOVR\Include;$(AnnwvynSDK64)\bullet3\src;$(AnnwvynSDK64)\OgreSDK\boost;$(AnnwvynSDK64)\OgreSDK\include\OGRE;$(AnnwvynSDK64)\OIS\include;$(AnnwvynSDK64)\glew\include\GL;$(AnnwvynSDK64)\glew\include;%(AdditionalIncludeDirectories);./pch</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;$(AnnwvynSDK64)\Annwvyn\include;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\include\AL;$(AnnwvynSDK64)\libsndfile\include;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\OpenAL32\Include;$(AnnwvynSDK64)\OculusSDK\3rdParty\glext;$(AnnwvynSDK64)\OculusSDK\LibOVR\Src;$(AnnwvynSDK64)\OculusSDK\LibOVRKernel\Src;$(AnnwvynSDK64)\OculusSDK\LibOVR\Include;$(AnnwvynSDK64)\bullet3\src;$(AnnwvynSDK64)\OgreSDK\boost;$(AnnwvynSDK64)\OgreSDK\include\OGRE;$(AnnwvynSDK64)\OIS\include;$(AnnwvynSDK64)\glew\include\GL;$(AnnwvynSDK64)\glew\include;%(AdditionalIncludeDirectories);./pch</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalOptions>-Zm237 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -180,11 +182,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(AnnwvynSDK64)\Annwvyn\lib;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\build\Release;$(AnnwvynSDK64)\bullet3\lib\Release;$(AnnwvynSDK64)\libsndfile\lib;$(AnnwvynSDK64)\OIS\lib;$(AnnwvynSDK64)\OculusSDK\LibOVR\Lib\Windows\x64\Release\VS2012;$(AnnwvynSDK64)\OgreSDK\lib\Release\opt;$(AnnwvynSDK64)\OgreSDK\lib\Release;$(AnnwvynSDK64)\OgreSDK\boost\lib;$(AnnwvynSDK64)\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./libnifalcon;$(AnnwvynSDK64)\Annwvyn\lib;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\build\Release;$(AnnwvynSDK64)\bullet3\lib\Release;$(AnnwvynSDK64)\libsndfile\lib;$(AnnwvynSDK64)\OIS\lib;$(AnnwvynSDK64)\OculusSDK\LibOVR\Lib\Windows\x64\Release\VS2012;$(AnnwvynSDK64)\OgreSDK\lib\Release\opt;$(AnnwvynSDK64)\OgreSDK\lib\Release;$(AnnwvynSDK64)\OgreSDK\boost\lib;$(AnnwvynSDK64)\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <PreventDllBinding>false</PreventDllBinding>
-      <AdditionalDependencies>Annwvyn.lib;ws2_32.lib;OgreMain.lib;OIS.lib;LibOVR.lib;Winmm.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;OpenAL32.lib;libsndfile-1.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nifalcon.lib;ftd2xx.lib;Annwvyn.lib;ws2_32.lib;OgreMain.lib;OIS.lib;LibOVR.lib;Winmm.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;OpenAL32.lib;libsndfile-1.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>echo Getting Annwvyn Dynamic Library from the SDK...

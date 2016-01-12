@@ -1,18 +1,26 @@
 #include "stdafx.h"
 #include "PlayerPaddleAction.hpp"
 
+#include "FalconController.hpp"
+
 using namespace Annwvyn;
 
 PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* tablePuck) : constructListener(), 
 	paddle(playerPaddle),
 	puck(tablePuck),
 	paddleSpeed(3.f),
-	deadzone(0.20f)
+	deadzone(0.20f),
+	falconFactor(15),
+	state(FALCON)
 {
 	AnnDebug() << "PLAYER PADDLE ACTION CREATED";
 	keyboardVelocity = AnnVect3::ZERO;
 	inputVelocity = AnnVect3::ZERO;
 	stickVelocity = AnnVect3::ZERO;
+
+	paddle->testCollisionWith(puck);
+
+	FalconController::getSingleton()->setCallback(this);
 }
 
 void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
@@ -81,31 +89,99 @@ void PlayerPaddleAction::StickEvent(AnnStickEvent e)
 	//If button 0 (Xbox A) is currently pressed
 	if(e.isPressed(0)) resetPuck();//Reset position/orientation of the puck	
 }
+
 void PlayerPaddleAction::tick()
 {
-	if(stickVelocity.isZeroLength() && !keyboardVelocity.isZeroLength())
-		inputVelocity = keyboardVelocity;
-	else
-		inputVelocity = stickVelocity;
 
-	//Prevent the paddle to be out of the table
-	if((paddle->pos().x < -0.70 && inputVelocity.x < 0) 
-		|| (paddle->pos().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
-
-	if((paddle->pos().z > 1.15 && inputVelocity.z > 0) 
-		|| (paddle->pos().z <= 0.1) && inputVelocity.z < 0) inputVelocity.z = 0;
-
-	//lock the orientation upright
-	paddle->setOrientation(AnnQuaternion::IDENTITY);
-
-	//Prevent the body to be "put to sleep" by the physics engine
-	paddle->getBody()->activate();
 	AnnVect3 currentVelocity(paddle->getBody()->getLinearVelocity());
-	if(currentVelocity.y <=0)
-		inputVelocity.y = currentVelocity.y;
 
-	paddle->setLinearSpeed(inputVelocity);
+	switch(state)
+	{
+	case CLASSIC:
+		if(stickVelocity.isZeroLength() && !keyboardVelocity.isZeroLength())
+			inputVelocity = keyboardVelocity;
+		else
+			inputVelocity = stickVelocity;
+
+		//Prevent the paddle to be out of the table
+		if((paddle->pos().x < -0.70 && inputVelocity.x < 0) 
+			|| (paddle->pos().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
+
+		if((paddle->pos().z > 1.15 && inputVelocity.z > 0) 
+			|| (paddle->pos().z <= 0.1) && inputVelocity.z < 0) inputVelocity.z = 0;
+
+		//lock the orientation upright
+		paddle->setOrientation(AnnQuaternion::IDENTITY);
+
+		//Prevent the body to be "put to sleep" by the physics engine
+		paddle->getBody()->activate();
+		if(currentVelocity.y <=0)
+			inputVelocity.y = currentVelocity.y;
+		paddle->setLinearSpeed(inputVelocity);
+		break;
+
+	case FALCON:
+
+		//AnnDebug() << "controll with falcon";	
+		FalconController* falcon (FalconController::getSingleton());
+		if(falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
+			resetPuck();
+		//AnnDebug() << falcon->getPosition();
+		AnnVect3 position = (falconFactor*falcon->getPosition() + AnnVect3(0, -1.1, 1.05));
+		if(position.y < -1.084) position.y = -1.084;
+		paddle->setPos(position);
+		paddle->setOrientation(AnnQuaternion::IDENTITY);
+		paddle->getBody()->setGravity(AnnVect3(0,0,0).getBtVector());
+
+		if(paddle->collideWith(puck))
+		{
+			float instantForce = 3;
+			AnnVect3 direction = paddle->pos() - puck->pos();
+			direction.y = 0; //only planar
+			direction.normalise();
+			AnnVect3 returnForce = direction * instantForce;
+			returnForce *= -1;
+			puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
+		}
+
+		break;
+	}
+
 	puck->setOrientation(AnnQuaternion::IDENTITY);
+
+}
+
+//haptics
+void PlayerPaddleAction::callback(FalconController* controller)
+{
+	//AnnDebug() << "callback" << endl;
+	AnnVect3 position = (falconFactor*controller->getPosition() + AnnVect3(0, -1.1, 1.05));
+
+	FalconController::FalconVect3 force = {0, 0, 0};
+
+	if(position.y < -1.084)
+	{
+	force[0] = 0;
+	force[1] = (-1.084 - position.y) * 70;
+	force[2] = 0;
+	}
+
+	if(paddle->collideWith(puck))
+	{
+		float instantForce = 5;
+		AnnVect3 direction = paddle->pos() - puck->pos();
+		direction.y = 0; //only planar
+		direction.normalise();
+		AnnVect3 returnForce = direction * instantForce;
+		
+		force[0] += returnForce.x;
+		force[1] += returnForce.y;
+		force[2] += returnForce.z;
+		
+	}
+
+	controller->setForce(force);
+	
 }
 
 
