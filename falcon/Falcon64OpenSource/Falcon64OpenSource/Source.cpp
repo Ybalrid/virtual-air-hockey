@@ -12,13 +12,32 @@ void pause()
 
 FalconController::FalconVect3 testForce = {0, 0, 20};
 
+class tester
+{
+public:
+	tester()
+	{}
+	void update()
+	{
+		cout << "hello world" << endl;
+	}
+};
+
+DWORD WINAPI threadFunction(LPVOID address)
+{
+	tester* object = static_cast<tester*>(address);
+	while(true) object->update();
+}
+
 int main()
 {
 	cout.precision(8);
 	auto Falcon(new FalconController);
 	pause();
-	if(Falcon->isInitialized())
-	while(true)
+
+	Falcon->startUpdateThread();
+	
+	int i(60*10); while(i-- > 0) //Loop for 10 seconds
 	{
 		//system("cls");
 		FalconController::FalconVect3 v =  Falcon->getPosition();
@@ -45,12 +64,13 @@ int main()
 		Falcon->setLED(FalconController::GREEN,Falcon->getButtonState(FalconController::UP));
 		Falcon->setLED(FalconController::BLUE,Falcon->getButtonState(FalconController::RIGHT));
 
-		Falcon->update();
-		//Sleep(static_cast<unsigned int>(1000.0f/60.0f));
+		//Falcon->update();
+		Sleep(1000/60);
 	}
-	else
-		cout << "The novint Falcon hasn't been initialized properly. Check USB connexion " << endl;
-	pause();
+//	else
+	//	cout << "The novint Falcon hasn't been initialized properly. Check USB connexion " << endl;
+
+
 	delete Falcon;
 	return 0;
 }

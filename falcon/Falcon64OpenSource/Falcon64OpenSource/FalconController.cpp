@@ -8,7 +8,10 @@ FalconController* FalconController::singleton(nullptr);
 FalconController::FalconController(ostream& logStream) :
 	logger(logStream),
 	ledstate(FalconFirmware::RED_LED | FalconFirmware::GREEN_LED | FalconFirmware::BLUE_LED),
-	initialized(false)
+	initialized(false),
+	encoderMutex(nullptr),
+	thread(nullptr),
+	threadStarted(false)
 {
 	if(singleton)
 	{
@@ -37,23 +40,48 @@ FalconController* FalconController::getSingleton()
 FalconController::~FalconController()
 {
 	singleton = nullptr;
+	if(threadStarted)
+		TerminateThread(thread, NULL);
+
 	if(falcon.isOpen()) falcon.close();
 }
 
 ///Run the IO update and get most recent motor encoder values
 void FalconController::update()
 {
-	if(!isInitialized())return;
+	if(!isInitialized())
+	{
+		logger << "Update call on unitialized FalconController" << endl;
+		return;
+	}
 	falcon.runIOLoop();
+
+	//Wait for mutex to be released
+	if(threadStarted && encoderMutex)
+		WaitForSingleObject(encoderMutex, INFINITE);
+
 	encoder = falcon.getFalconFirmware()->getEncoderValues();
-	//test();
+
+	//Release the mutex ourselves
+	if(threadStarted && encoderMutex)
+		ReleaseMutex(encoderMutex);
 }
 
 ///Get the position with origin offset applied (as a std::array of 3 doubles)
 FalconController::FalconVect3 FalconController::getPosition()
 {
 	if(!isInitialized()) return zero;
+
+	//Wait for mutex to be released
+	if(threadStarted && encoderMutex)
+		WaitForSingleObject(encoderMutex, INFINITE);
+	
 	falcon.getFalconKinematic()->getPosition(encoder, position);
+	
+	//Release the mutex ourselves
+	if(threadStarted && encoderMutex)
+		ReleaseMutex(encoderMutex);
+
 	for(size_t i(0); i < 3; i++) position[i] -= origin[i];
 	return position;
 }
@@ -207,4 +235,26 @@ void FalconController::test()
 bool FalconController::isInitialized()
 {
 	return initialized;
+}
+
+DWORD WINAPI FalconController::UpdateThread(LPVOID address)
+{
+	FalconController* Falcon = static_cast<FalconController*>(address);
+	while(true) 
+	{
+		WaitForSingleObject(Falcon->encoderMutex, INFINITE);
+		Falcon->update();
+		ReleaseMutex(Falcon->encoderMutex);
+		Sleep(1);
+	}
+}
+
+void FalconController::startUpdateThread()
+{
+	thread = CreateThread(NULL, 0, FalconController::UpdateThread, this, 0, nullptr);
+	encoderMutex = CreateMutex(NULL, FALSE, NULL);
+	if(encoderMutex)
+		logger << "Mutex Created" << endl;
+	else
+		logger << "Error with Mutex" << endl;
 }
