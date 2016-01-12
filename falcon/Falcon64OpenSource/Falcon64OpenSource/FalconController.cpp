@@ -61,9 +61,6 @@ void FalconController::update()
 	//Release the mutex ourselves
 	if(threadStarted && encoderMutex)
 		ReleaseMutex(encoderMutex);
-
-	logger << "Encoder values updated" << endl;	
-	//test();
 }
 
 ///Get the position with origin offset applied (as a std::array of 3 doubles)
