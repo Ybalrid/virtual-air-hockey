@@ -27,6 +27,17 @@ void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 {
 	if(e.isPressed() && e.getKey() == KeyCode::space)
 		resetPuck();
+	if(e.isPressed() && e.getKey() == KeyCode::q)
+	{
+		AnnDebug() << "Classic controls";
+		state = CLASSIC;
+	}
+		if(e.isPressed() && e.getKey() == KeyCode::a)
+	{
+		AnnDebug() << "Falcon controls";
+		state = FALCON;
+	}
+
 
 	if(e.isPressed()) switch (e.getKey())
 	{

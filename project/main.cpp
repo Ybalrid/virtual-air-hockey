@@ -37,7 +37,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 
 	AnnEngine::Instance()->initResources();
 	AnnEngine::Instance()->oculusInit();
-	AnnEngine::Instance()->setDebugPhysicState(true);
+	AnnEngine::Instance()->setDebugPhysicState(false);
 
 	//If the player has to folow the integrated physics scheme
 	AnnEngine::Instance()->initPlayerPhysics();
