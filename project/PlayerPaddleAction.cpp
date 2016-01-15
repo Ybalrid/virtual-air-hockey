@@ -153,6 +153,7 @@ void PlayerPaddleAction::tick()
 			AnnVect3 returnForce = direction * instantForce;
 			returnForce *= -1;
 			puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
+			puck->playSound("media/contact.wav");
 		}
 
 		break;
@@ -172,27 +173,29 @@ void PlayerPaddleAction::callback(FalconController* controller)
 
 	if(position.y < -1.084)
 	{
-	force[0] = 0;
-	force[1] = (-1.084 - position.y) * 70;
-	force[2] = 0;
+		force[0] = 0;
+		force[1] = (-1.084 - position.y) * 50;
+		force[2] = 0;
 	}
 
 	if(paddle->collideWith(puck))
 	{
 		float instantForce = 5;
+
+		//Calculate a translation vector between the paddle and puck
 		AnnVect3 direction = paddle->pos() - puck->pos();
 		direction.y = 0; //only planar
-		direction.normalise();
+		//Normalize it
+		if(!direction.isZeroLength())
+			direction.normalise();
 		AnnVect3 returnForce = direction * instantForce;
 		
 		force[0] += returnForce.x;
 		force[1] += returnForce.y;
 		force[2] += returnForce.z;
-		
 	}
-
 	controller->setForce(force);
-	
+	AnnDebug() << AnnVect3(force[0], force[1], force[2]);
 }
 
 
