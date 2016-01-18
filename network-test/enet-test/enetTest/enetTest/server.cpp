@@ -52,7 +52,7 @@ int  i;
               enet_host_broadcast(server, 1, packet);
               enet_host_flush(server);
             } else {
-              for (i=0; ipeerCount; i++) {
+              for (i=0; server->peerCount; i++) {
                 if (&server->peers[i] != event.peer) {
                   sprintf(buffer, "%s: %s", 
                     (char*) event.peer->data, (char*)
