@@ -1,244 +1,175 @@
 #include <enet/enet.h>
-#include <stdlib.h>
-#include <string>
+#include <stdio.h>
 #include <iostream>
-#pragma warning(disable:4996)
+#include <string>
+#include <conio.h>
+using namespace std;
 
-class Host
+int main(int argc, char **argv)
 {
-    ENetAddress address;
-    ENetHost * server;
-    ENetHost* client;
-    ENetEvent event;
-public:
-    Host()
-        :server(NULL)
-    {
-        enet_initialize();
-        setupServer();
-    }
+	cout << "Enter 1(server) or 2(client)" << endl;
+	int choice;
+	cin >> choice;
+	cout << endl << endl;
 
-    void setupServer()
-    {
-        if(server)
-        {
-            enet_host_destroy(server);
-            server = NULL;
-        }
+	if (choice==1) {
+		ENetAddress address;
+		ENetHost *server;
+		ENetEvent event;
+		ENetPeer *peer = NULL;
+		int eventStatus;
 
-        address.host = ENET_HOST_ANY;
-        /* Bind the server to port 1234. */
-        address.port = 1721;
+		// a. Initialize enet
+		if (enet_initialize() != 0) {
+			fprintf(stderr, "An error occured while initializing ENet.\n");
+			return EXIT_FAILURE;
+		}
 
-        server = enet_host_create (& address /* the address to bind the server host to */, 
-            32      /* allow up to 32 clients and/or outgoing connections */,
-            2      /* allow up to 2 channels to be used, 0 and 1 */,
-            0      /* assume any amount of incoming bandwidth */,
-            0      /* assume any amount of outgoing bandwidth */);
+		atexit(enet_deinitialize);
 
-    }
+	
+		// b. Create a host using enet_host_create
+		address.host = ENET_HOST_ANY;
+		address.port = 1234;
 
-     void daLoop()
-     {
-         while(true)
-         {
-             /* Wait up to 1000 milliseconds for an event. */
-             while (enet_host_service (server, & event, 5000) > 0)
-             {
-                 ENetPacket * packet;
+		server = enet_host_create(&address, 32, 2, 0, 0);
 
-                 switch (event.type)
-                 {
-                 case ENET_EVENT_TYPE_CONNECT:
-                     printf ("A new client connected from %x:%u.\n", 
-                         event.peer -> address.host,
-                         event.peer -> address.port);
+		if (server == NULL) {
+			fprintf(stderr, "An error occured while trying to create an ENet server host\n");
+			exit(EXIT_FAILURE);
+		}
+		else cout << "Server up and running (type 'q' to quit)" << endl << endl;
 
-                     /* Store any relevant client information here. */
-                     event.peer -> data = "Client information";
+		// c. Connect and user service
+		eventStatus = 1;
+		enet_uint32 wait = 60000;
+		bool first = true;
 
-                     /* Create a reliable packet of size 7 containing "packet\0" */
-                     packet = enet_packet_create ("packet", 
-                         strlen ("packet") + 1, 
-                         ENET_PACKET_FLAG_RELIABLE);
+		while (1) {
+			eventStatus = enet_host_service(server, &event, wait);
 
-                     /* Extend the packet so and append the string "foo", so it now */
-                     /* contains "packetfoo\0"                                      */
-                     enet_packet_resize (packet, strlen ("packetfoo") + 1);
-                     strcpy ((char*)& packet -> data [strlen ("packet")], "foo");
+			// If we had some event that interested us
+			if (eventStatus > 0) {
+				switch(event.type) {
+					case ENET_EVENT_TYPE_CONNECT:
+						printf("(Server) We got a new connection from %x\n",
+								event.peer->address.host);
+						peer = event.peer;
+						wait = 0;
+						break;
 
-                     /* Send the packet to the peer over channel id 0. */
-                     /* One could also broadcast the packet by         */
-                     /* enet_host_broadcast (host, 0, packet);         */
-                     enet_peer_send (event.peer, 0, packet);
-                     /* One could just use enet_host_service() instead. */
-                     enet_host_flush (server);
+					case ENET_EVENT_TYPE_RECEIVE:
+						printf("(Client>%s\n", event.packet->data);
+						// Lets broadcast this message to all
+						//enet_host_broadcast(server, 0, event.packet);
+						break;
 
-                     break;
+					case ENET_EVENT_TYPE_DISCONNECT:
+						printf("%s disconnected.\n", event.peer->data);
+						// Reset client's information
+						event.peer->data = NULL;
+						break;
 
-                 case ENET_EVENT_TYPE_RECEIVE:
-                     printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                         event.packet -> dataLength,
-                         event.packet -> data,
-                         event.peer -> data,
-                         event.channelID);
+				}
+			}
 
-                     /* Clean up the packet now that we're done using it. */
-                     enet_packet_destroy (event.packet);
+			printf("Server> ");
+			string message = "hello";
+			if (first) {
+				getline(cin,message);
+				first = false;
+			}
+			getline(cin,message);
+			if (message=="q") return 0;
 
-                     break;
+			if (strlen(message.c_str()) > 0) {
+				ENetPacket *packet = enet_packet_create(message.c_str(), strlen(message.c_str()) + 1, ENET_PACKET_FLAG_RELIABLE);
+				enet_peer_send(peer, 0, packet);
+			}
+		}
+	}
 
-                 case ENET_EVENT_TYPE_DISCONNECT:
-                     printf ("%s disconected.\n", event.peer -> data);
+	if (choice==2) {
+		ENetAddress address;
+		ENetHost *client;
+		ENetPeer *peer;
+		//char message[1024];
+		ENetEvent event;
+		int eventStatus;
 
-                     /* Reset the peer's client information. */
+		// a. Initialize enet
+		if (enet_initialize() != 0) {
+			fprintf(stderr, "An error occured while initializing ENet.\n");
+			return EXIT_FAILURE;
+		}
 
-                     event.peer -> data = NULL;
-                 }
-             }
-         }
+		atexit(enet_deinitialize);
 
-     }
+		// b. Create a host using enet_host_create
+		client = enet_host_create(NULL, 1, 2, 57600/8, 14400/8);
 
-        ~Host()
-    {
-        if(server)
-        {
-            enet_host_destroy(server);
-            server = NULL;
-        }
+		if (client == NULL) {
+			fprintf(stderr, "An error occured while trying to create an ENet server host\n");
+			exit(EXIT_FAILURE);
+		}
 
-        atexit (enet_deinitialize);
-    }
-};
+		enet_address_set_host(&address, "localhost");
+		address.port = 1234;
 
-class Client
-{
-    ENetAddress address;
-    ENetEvent event;
-    ENetPeer *peer;
-    ENetHost* client;
-public:
-    Client()
-        :peer(NULL)
-    {
-        enet_initialize();
-        setupPeer();
-    }
+		// c. Connect and user service
+		peer = enet_host_connect(client, &address, 2, 0);
 
-    void setupPeer()
-    {
+		if (peer == NULL) {
+			fprintf(stderr, "No available peers for initializing an ENet connection");
+			exit(EXIT_FAILURE);
+		}
 
-        client = enet_host_create (NULL /* create a client host */,
-            1 /* only allow 1 outgoing connection */,
-            2 /* allow up 2 channels to be used, 0 and 1 */,
-            57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
-            14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
+		eventStatus = 1;
+		bool first = true;
+		int wait = 1000;
 
-        if (client == NULL)
-        {
-            fprintf (stderr, 
-                "An error occurred while trying to create an ENet client host.\n");
-            exit (EXIT_FAILURE);
-        }
+		
+		while (1) {
+			eventStatus = enet_host_service(client, &event, 0);
 
-        /* Connect to some.server.net:1234. */
-        enet_address_set_host (& address, "192.168.2.13");
-        address.port = 1721;
+			// If we had some event that interested us
+			if (eventStatus > 0) {
+				switch(event.type) {
+					case ENET_EVENT_TYPE_CONNECT:
+						printf("(Client) We got a new connection from %x\n",
+								event.peer->address.host);
+						wait = 0;
+						break;
 
-        /* Initiate the connection, allocating the two channels 0 and 1. */
-        peer = enet_host_connect (client, & address, 2, 0);    
+					case ENET_EVENT_TYPE_RECEIVE:
+						//printf("(Client) Message from server : %s\n", event.packet->data);
+						printf("Server>%s\n", event.packet->data);
+						// Lets broadcast this message to all
+						// enet_host_broadcast(client, 0, event.packet);
+						enet_packet_destroy(event.packet);
+						break;
 
-        if (peer == NULL)
-        {
-            fprintf (stderr, 
-                "No available peers for initiating an ENet connection.\n");
-            exit (EXIT_FAILURE);
-        }
+					case ENET_EVENT_TYPE_DISCONNECT:
+						printf("(Client) %s disconnected.\n", event.peer->data);
+						// Reset client's information
+						event.peer->data = NULL;
+						break;
+				}
+			}
 
-        /* Wait up to 5 seconds for the connection attempt to succeed. */
-        if (enet_host_service (client, & event, 20000) > 0 &&
-            event.type == ENET_EVENT_TYPE_CONNECT)
-        {
-            std::cout << "Connection to some.server.net:1234 succeeded." << std::endl;
-        }
-        else
-        {
-            /* Either the 5 seconds are up or a disconnect event was */
-            /* received. Reset the peer in the event the 5 seconds   */
-            /* had run out without any significant event.            */
-            enet_peer_reset (peer);
+			printf("Client> ");
+			string message;
+			if (first) {
+				getline(cin,message);
+				first = false;
+			}
+			getline(cin,message);
+			if (message=="q") return 0;
 
-            puts ("Connection to some.server.net:1234 failed.");
-        }
-    }
-
-
-    void daLoop()
-    {
-        ENetPacket* packet;
-
-        /* Create a reliable packet of size 7 containing "packet\0" */
-        packet = enet_packet_create ("backet", 
-            strlen ("backet") + 1, 
-            ENET_PACKET_FLAG_RELIABLE);
-
-        /* Extend the packet so and append the string "foo", so it now */
-        /* contains "packetfoo\0"                                      */
-        enet_packet_resize (packet, strlen ("backetfoo") + 1);
-        strcpy ((char*)& packet -> data [strlen ("backet")], "foo");
-
-        /* Send the packet to the peer over channel id 0. */
-        /* One could also broadcast the packet by         */
-        /* enet_host_broadcast (host, 0, packet);         */
-        enet_peer_send (event.peer, 0, packet);
-        /* One could just use enet_host_service() instead. */
-        enet_host_flush (client);
-
-        while(true)
-        {
-            /* Wait up to 1000 milliseconds for an event. */
-            while (enet_host_service (client, & event, 1000) > 0)
-            {
-                ENetPacket * packet;
-
-                switch (event.type)
-                {
-                case ENET_EVENT_TYPE_RECEIVE:
-                    printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                        event.packet -> dataLength,
-                        event.packet -> data,
-                        event.peer -> data,
-                        event.channelID);
-
-                    /* Clean up the packet now that we're done using it. */
-                    enet_packet_destroy (event.packet);
-
-                    break;
-                }
-            }
-        }
-    }
-    ~Client()
-    {
-        atexit (enet_deinitialize);
-    }
-};
-
-int main()
-{
-    std::string a;
-    std::cin >> a;
-    if(a == "host")
-    {
-        Host host;
-        host.daLoop();
-    }
-    else
-    {
-        Client c;
-        c.daLoop();
-    }
-
-    return 0;
+			if (strlen(message.c_str()) > 0 && peer) {
+				ENetPacket *packet = enet_packet_create(message.c_str(), strlen(message.c_str()) + 1, ENET_PACKET_FLAG_RELIABLE);
+				enet_peer_send(peer, 0, packet);
+			}
+		}
+	}
 }
