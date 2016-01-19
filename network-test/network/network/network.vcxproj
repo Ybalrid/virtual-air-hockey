@@ -80,12 +80,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Users\PST4_VR\Desktop\chat_client.cpp" />
-    <ClCompile Include="..\..\..\..\..\Users\PST4_VR\Desktop\chat_server.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="chat_client.cpp" />
+    <ClCompile Include="chat_server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Users\PST4_VR\Desktop\chat_message.hpp" />
+    <ClInclude Include="chat_message.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
