@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp" />
+    <ClCompile Include="host_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
