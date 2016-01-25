@@ -46,10 +46,12 @@ private:
 	Net net;
 	int error;
 	char localIP[16];
+	float netTime;
 public:
 	MyLevel();
 	void load();
 	int initializeServer(int port);
+	void communicate(float frameTime);
 	void runLogic();
 };
 

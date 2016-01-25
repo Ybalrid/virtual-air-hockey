@@ -65,6 +65,20 @@ int MyLevel::initializeServer(int port = ANVPORT)
 	return netNS::NET_OK;
 }
 
+// --- Do network communications ---
+void MyLevel::communicate(float frameTime)
+{
+	// communicate with client 
+	//doClientComumunication(); TODO
+	// Calculate elapsed time for network communications
+	netTime += frameTime;
+	if(netTime < netNS::NET_TIMER)
+		return;
+	netTime -= netNS::NET_TIMER;
+	// check for inactive clients, called every NET_TIMER seconds
+	//checkNetworkTimeout(); TODO
+}
+
 void MyLevel::runLogic()
 {
 }
