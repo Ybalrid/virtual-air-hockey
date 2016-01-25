@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network", "network\network.vcxproj", "{5FA91310-4832-4729-8646-F7AB787DB6FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FA91310-4832-4729-8646-F7AB787DB6FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5FA91310-4832-4729-8646-F7AB787DB6FF}.Debug|Win32.Build.0 = Debug|Win32
+		{5FA91310-4832-4729-8646-F7AB787DB6FF}.Release|Win32.ActiveCfg = Release|Win32
+		{5FA91310-4832-4729-8646-F7AB787DB6FF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
