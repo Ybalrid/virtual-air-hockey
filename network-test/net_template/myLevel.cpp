@@ -54,6 +54,11 @@ int MyLevel::initializeServer(int port = ANVPORT)
 		return netNS::NET_ERROR;
 	}
 
+	for (int i=0; i<MAX_PLAYERS; i++)
+	{
+		
+	}
+
 	AnnEngine::Instance()->getPlayer()->setPosition(AnnVect3(0,0,2.1));
 
 	AnnDebug() << "---- Server ----";
@@ -77,6 +82,13 @@ void MyLevel::communicate(float frameTime)
 	netTime -= netNS::NET_TIMER;
 	// check for inactive clients, called every NET_TIMER seconds
 	//checkNetworkTimeout(); TODO
+}
+
+// --- Check for network timeout ---
+void MyLevel::checkNetworkTimeout()
+{
+	std::stringstream ss;
+	for (int i
 }
 
 void MyLevel::runLogic()
