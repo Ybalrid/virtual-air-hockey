@@ -1,11 +1,16 @@
 #ifndef MY_LEVEL
 #define MY_LEVEL
-
 #include <Annwvyn.h>
+#include "net.h"
 using namespace Annwvyn;
 
 const int ANVPORT = 48161;
 const int MAX_PLAYERS = 2;
+
+namespace Annwvyn {
+	void setActive(AnnPlayer& p);
+	void setConnected(AnnPlayer& p);
+};
 
 struct PlayerStc // state information for a player 
 {
@@ -24,6 +29,12 @@ struct ToServerStc // stuff sent to a server from a client
 	UCHAR playerN;
 };
 
+struct Player
+{
+	PlayerStc shipData; 
+	//TorpedoStc torepedoData; TODO
+};
+
 struct ToClientStc // stuff sent to a client from the server
 {
 	Player player[MAX_PLAYERS];
@@ -31,11 +42,7 @@ struct ToClientStc // stuff sent to a client from the server
 	UCHAR  sounds; 
 };
 
-struct Player
-{
-	PlayerStc shipData; 
-	//TorpedoStc torepedoData; TODO
-};
+
 
 
 //Each level you can create hinerits
