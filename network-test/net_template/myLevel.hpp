@@ -18,7 +18,6 @@ struct PlayerStc // state information for a player
 	float Y;
 	float radians;
 	float rotation;
-	short score;
 	UCHAR playerN;
 	UCHAR flags;
 };
@@ -32,7 +31,7 @@ struct ToServerStc // stuff sent to a server from a client
 struct Player
 {
 	PlayerStc shipData; 
-	//TorpedoStc torepedoData; TODO
+	
 };
 
 struct ToClientStc // stuff sent to a client from the server
