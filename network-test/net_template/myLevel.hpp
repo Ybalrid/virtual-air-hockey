@@ -55,12 +55,16 @@ private:
 	int error;
 	char localIP[16];
 	float netTime;
+	bool connected;
+	bool active;
 public:
 	MyLevel();
 	void load();
 	int initializeServer(int port);
 	void communicate(float frameTime);
 	void checkNetworkTimeout();
+	void setConnected(bool c) { connected = c; };
+	void setActive(bool a) { active = a; }
 	void runLogic();
 };
 

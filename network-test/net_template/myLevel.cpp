@@ -31,6 +31,8 @@ void MyLevel::load()
 	levelLighting.push_back(light);
 
 	engine->setAmbiantLight(Ogre::ColourValue::White/2);
+
+	engine->getPlayer()->setPosition(AnnVect3(0,1,0));
 	
 
 	engine->resetPlayerPhysics();
@@ -55,7 +57,7 @@ int MyLevel::initializeServer(int port = ANVPORT)
 
 	for (int i=0; i<MAX_PLAYERS; i++)
 	{
-		//player[i]
+		
 	}
 
 	AnnEngine::Instance()->getPlayer()->setPosition(AnnVect3(0,0,2.1));
@@ -84,6 +86,15 @@ void MyLevel::communicate(float frameTime)
 }
 
 // --- Check for network timeout ---
+
+void MyLevel::checkNetworkTimeout()
+{
+	std::stringstream ss;
+	for (int i=0; i<MAX_PLAYERS; i++)
+	{
+		//if (player[i]. todo 401
+	}
+}
 
 
 void MyLevel::runLogic()
