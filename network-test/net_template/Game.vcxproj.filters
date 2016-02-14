@@ -7,6 +7,7 @@
     </ClCompile>
     <ClCompile Include="myLevel.cpp" />
     <ClCompile Include="net.cpp" />
+    <ClCompile Include="netPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -23,6 +24,7 @@
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="net.h" />
+    <ClInclude Include="netPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />
