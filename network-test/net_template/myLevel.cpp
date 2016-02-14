@@ -155,6 +155,43 @@ void MyLevel::prepareDataForClient()
 	}
 }
 
+//========================================================================
+// Client is requesting to join game
+//========================================================================
+
+void MyLevel::clientWantToJoin()
+{
+	std::stringstream ss;
+	int size;
+	int status;
+	connectResponse.number = 255;
+	if (playerCount == 0)
+	{
+		roundOver = true;
+		// score system goes here (TODO)
+	}
+	AnnDebug() << "Player requesting to join.";
+	// find available player position to use
+	for(int i=0; i<MAX_PLAYERS; i++) // search all player position
+	{
+		if (player[i].getConnected() == false) // if this position available
+		{
+			player[i].setConnected(true);
+			player[i].setTimeout(0);
+			player[i].setCommWarnings(0);
+			player[i].setNetIP(remoteIP); // save player's IP
+			player[i].setCommErrors(0); // clear old errors
+			// send SERVER_ID adn player number to client
+			strcpy_s(connectResponse.response, netNS::SERVER_ID);
+			connectResponse.number = (UCHAR)i;
+			size = sizeof(connectResponse);
+			status = net.sendData((char*) &connectResponse, size, remoteIP);
+
+		}
+	}
+
+}
+
 
 void MyLevel::runLogic()
 {

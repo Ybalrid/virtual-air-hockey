@@ -17,6 +17,7 @@ struct PlayerStc
 class NetPlayer
 {
 private:
+	int commErrors;
 	bool connected;
 	bool active;
 	int timeout;
@@ -63,6 +64,10 @@ public:
     PlayerStc getNetData();
 
 	void setNetData(PlayerStc ss);
+
+	int getcommErrors() { return commErrors;}
+	// Set commErrors
+    void setCommErrors(int e) {commErrors = e;}
 
 	~NetPlayer(void);
 };

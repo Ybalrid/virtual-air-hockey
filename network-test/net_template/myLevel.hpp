@@ -22,6 +22,13 @@ struct PlayerStc // state information for a player
 	UCHAR flags;
 };
 
+// Sent to client in response to connection request
+struct ConnectResponse
+{
+    char response[netNS::RESPONSE_SIZE];    // server response
+    UCHAR   number;                         // player number if connected
+};
+
 struct PaddleStc 
 {
 	float x;
@@ -64,6 +71,8 @@ private:
 	bool active;
 	ToServerStc toServerData;
 	ToClientStc toClientData;
+	ConnectResponse connectResponse;
+	int playerCount;    // number of players in game
 	char remoteIP[16];
 public:
 	MyLevel();
@@ -73,6 +82,7 @@ public:
 	void doClientCommunication();
 	void checkNetworkTimeout();
 	void prepareDataForClient();
+	void clientWantToJoin();
 	void runLogic();
 };
 
