@@ -1,9 +1,4 @@
-#include "stdafx.h"
-#include "NetPlayer.h"
-#include "Annwvyn.h"
-
-using namespace Annwvyn;
-
+#include "netPlayer.h"
 
 NetPlayer::NetPlayer(void)
 {

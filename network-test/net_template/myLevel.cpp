@@ -108,6 +108,45 @@ void MyLevel::checkNetworkTimeout()
 	}
 }
 
+void MyLevel::doClientCommunication() 
+{
+	int playN;
+	int size;
+	//prepareDataForClient(); TODO
+	for (int i=0; i<MAX_PLAYERS; i++)
+	{
+		size = sizeof(toServerData);
+		if( net.readData((char*) &toServerData, size, remoteIP) == netNS::NET_OK)
+		{
+			if(size > 0)
+			{
+				playN = toServerData.playerN;
+				if (playN == 255)
+				{
+					//clientWantsTiJoin(); TODO
+				}
+				else
+				{
+					if (player[playN].getConnected())
+					{
+						if (player[playN].getActive())
+							player[playN].setButtons(toServerData.buttons);
+						size = sizeof(toClientData);
+						// send player the latest game data
+						net.sendData((char*) &toClientData, size, player[i].getNetIP());
+						player[playN].setTimeout(0);
+						player[playN].setCommWarnings(0);
+					}
+				}
+			}
+		}
+		else    // No more incomming data ? break !!
+		{
+			break;
+		}
+	}
+}
+
 
 void MyLevel::runLogic()
 {

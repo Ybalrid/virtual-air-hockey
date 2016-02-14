@@ -62,14 +62,16 @@ private:
 	float netTime;
 	bool connected;
 	bool active;
+	ToServerStc toServerData;
+	ToClientStc toClientData;
+	char remoteIP[16];
 public:
 	MyLevel();
 	void load();
 	int initializeServer(int port);
 	void communicate(float frameTime);
+	void doClientCommunication();
 	void checkNetworkTimeout();
-	void setConnected(bool c) { connected = c; };
-	void setActive(bool a) { active = a; }
 	void runLogic();
 };
 
