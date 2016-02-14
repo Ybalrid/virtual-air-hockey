@@ -4,6 +4,15 @@
 
 using namespace Annwvyn;
 
+struct PlayerStc
+{
+	float X;
+	float Y;
+	float Z;
+	UCHAR playerN;
+	UCHAR flags;
+};
+
 
 class NetPlayer
 {
@@ -49,6 +58,11 @@ public:
 	// Return commWarnings
     int getCommWarnings()   {return commWarnings;}
 	void setCommWarnings(int w) {commWarnings = w;}
+
+	// Return Ship Data
+    PlayerStc getNetData();
+
+	void setNetData(PlayerStc ss);
 
 	~NetPlayer(void);
 };

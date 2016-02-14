@@ -77,14 +77,14 @@ int MyLevel::initializeServer(int port)
 void MyLevel::communicate(float frameTime)
 {
 	// communicate with client 
-	//doClientComumunication(); TODO
+	doClientCommunication(); 
 	// Calculate elapsed time for network communications
 	netTime += frameTime;
 	if(netTime < netNS::NET_TIMER)
 		return;
 	netTime -= netNS::NET_TIMER;
 	// check for inactive clients, called every NET_TIMER seconds
-	//checkNetworkTimeout(); TODO
+	checkNetworkTimeout(); 
 }
 
 // --- Check for network timeout ---
@@ -112,7 +112,7 @@ void MyLevel::doClientCommunication()
 {
 	int playN;
 	int size;
-	//prepareDataForClient(); TODO
+	prepareDataForClient(); 
 	for (int i=0; i<MAX_PLAYERS; i++)
 	{
 		size = sizeof(toServerData);
@@ -144,6 +144,14 @@ void MyLevel::doClientCommunication()
 		{
 			break;
 		}
+	}
+}
+
+void MyLevel::prepareDataForClient() 
+{
+	for (int i=0; i<MAX_PLAYERS; i++)
+	{
+		toClientData.player[i].playerData = player[i].getNetData();
 	}
 }
 
