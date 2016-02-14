@@ -56,7 +56,7 @@ class MyLevel : public AnnAbstractLevel
 {
 private:
 	Net net;
-	netPlayer player[MAX_PLAYERS];
+	NetPlayer player[MAX_PLAYERS];
 	int error;
 	char localIP[16];
 	float netTime;

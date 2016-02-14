@@ -1,12 +1,12 @@
 #pragma once
-class netPlayer
+class NetPlayer
 {
 private:
 	bool connected;
 	bool active;
 	int timeout;
 public:
-	netPlayer(void);
+	NetPlayer(void);
 
 	// Set netConnected boolean
     void setConnected(bool c) {connected = c;}
@@ -23,6 +23,6 @@ public:
 	
 
 	
-	~netPlayer(void);
+	~NetPlayer(void);
 };
 

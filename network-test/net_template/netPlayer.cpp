@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "netPlayer.h"
+#include "NetPlayer.h"
 #include "Annwvyn.h"
 
 using namespace Annwvyn;
 
 
-netPlayer::netPlayer(void)
+NetPlayer::NetPlayer(void)
 {
 }
 
 
-netPlayer::~netPlayer(void)
+NetPlayer::~NetPlayer(void)
 {
 }
