@@ -39,7 +39,7 @@ void MyLevel::load()
 
 }
 
-int MyLevel::initializeServer(int port = ANVPORT)
+int MyLevel::initializeServer(int port)
 {
 	std::stringstream ss;
 	if(port < netNS::MIN_PORT)
@@ -57,14 +57,16 @@ int MyLevel::initializeServer(int port = ANVPORT)
 
 	for (int i=0; i<MAX_PLAYERS; i++)
 	{
-		
+		player[i].setConnected(false);
+		player[i].setActive(false);
 	}
 
-	AnnEngine::Instance()->getPlayer()->setPosition(AnnVect3(0,0,2.1));
+	// AnnEngine::Instance()->getPlayer()->setPosition(AnnVect3(0,0,2.1));
 
 	AnnDebug() << "---- Server ----";
 	net.getLocalIP(localIP);
 	ss << "Server IP: " << localIP;
+	AnnDebug() << ss.str();
 	ss.str("");
 	ss << "Port: " << port;
 	AnnDebug() << ss.str();
@@ -92,7 +94,17 @@ void MyLevel::checkNetworkTimeout()
 	std::stringstream ss;
 	for (int i=0; i<MAX_PLAYERS; i++)
 	{
-		//if (player[i]. todo 401
+		if (player[i].getConnected())
+		{
+			player[i].incTimeout();
+			// if communication timout 
+			if (player[i].getTimeout() > netNS::MAX_ERRORS)
+			{
+				player[i].setActive(false);
+				ss << "***** Player " << i << " disconnected. *****";
+				AnnDebug() << ss.str();
+			}
+		}
 	}
 }
 

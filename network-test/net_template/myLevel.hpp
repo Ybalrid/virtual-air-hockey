@@ -2,6 +2,7 @@
 #define MY_LEVEL
 #include <Annwvyn.h>
 #include "net.h"
+#include "netPlayer.h"
 using namespace Annwvyn;
 
 const int ANVPORT = 48161;
@@ -14,12 +15,20 @@ namespace Annwvyn {
 
 struct PlayerStc // state information for a player 
 {
-	float X;
-	float Y;
-	float Z;
+	float x;
+	float y;
+	float z;
 	UCHAR playerN;
 	UCHAR flags;
 };
+
+struct PaddleStc 
+{
+	float x;
+	float y;
+	float z;
+};
+
 
 struct ToServerStc // stuff sent to a server from a client
 {
@@ -29,7 +38,8 @@ struct ToServerStc // stuff sent to a server from a client
 
 struct Player
 {
-	PlayerStc shipData; 
+	PlayerStc playerData;
+	PaddleStc paddleData;
 };
 
 struct ToClientStc // stuff sent to a client from the server
@@ -46,7 +56,7 @@ class MyLevel : public AnnAbstractLevel
 {
 private:
 	Net net;
-	AnnPlayer player[MAX_PLAYERS];
+	netPlayer player[MAX_PLAYERS];
 	int error;
 	char localIP[16];
 	float netTime;
