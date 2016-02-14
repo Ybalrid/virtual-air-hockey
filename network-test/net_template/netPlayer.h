@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include "Annwvyn.h"
 
-using namespace Annwvyn;
 
 struct PlayerStc
 {
