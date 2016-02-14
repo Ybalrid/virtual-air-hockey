@@ -167,7 +167,7 @@ void MyLevel::clientWantToJoin()
 	connectResponse.number = 255;
 	if (playerCount == 0)
 	{
-		roundOver = true;
+		//roundOver = true;
 		// score system goes here (TODO)
 	}
 	AnnDebug() << "Player requesting to join.";
@@ -185,11 +185,24 @@ void MyLevel::clientWantToJoin()
 			strcpy_s(connectResponse.response, netNS::SERVER_ID);
 			connectResponse.number = (UCHAR)i;
 			size = sizeof(connectResponse);
-			status = net.sendData((char*) &connectResponse, size, remoteIP);
-
+			status = net.sendData((char*) &connectResponse, size, remoteIP, port);
+			if (status == netNS::NET_ERROR)
+			{
+				AnnDebug() << net.getError(status); // display error
+				return;
+			}
+			toServerData.playerN = i; // clear join request from
+									 //  input buffer
+			ss << "Connected player as number: " << i;
+			AnnDebug() << ss.str(); // found available player
+			return;
 		}
 	}
-
+	// send SERVER_FULL to client
+	strcpy_s(connectResponse.response, netNS::SERVER_FULL);
+	size = sizeof(connectResponse);
+	status = net.sendData((char*)&connectResponse, size, remoteIP, port);
+	AnnDebug() << "server full.";
 }
 
 

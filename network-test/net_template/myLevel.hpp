@@ -8,10 +8,6 @@ using namespace Annwvyn;
 const int ANVPORT = 48161;
 const int MAX_PLAYERS = 2;
 
-namespace Annwvyn {
-	void setActive(AnnPlayer& p);
-	void setConnected(AnnPlayer& p);
-};
 
 struct PlayerStc // state information for a player 
 {
@@ -74,6 +70,7 @@ private:
 	ConnectResponse connectResponse;
 	int playerCount;    // number of players in game
 	char remoteIP[16];
+	USHORT port;
 public:
 	MyLevel();
 	void load();
