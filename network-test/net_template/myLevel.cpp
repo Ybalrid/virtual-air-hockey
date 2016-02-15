@@ -208,4 +208,5 @@ void MyLevel::clientWantToJoin()
 
 void MyLevel::runLogic()
 {
+	communicate(frameTime);
 }
