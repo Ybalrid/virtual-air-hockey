@@ -9,4 +9,8 @@ public:
 	void load();
 	void unload();
 	void runLogic();
+
+private:
+	AnnAbstractLevel* GameLevel;
+	AnnGameObject* pointer;
 };

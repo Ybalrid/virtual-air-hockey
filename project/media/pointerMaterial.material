@@ -1,0 +1,35 @@
+// pointerMaterial genrated by blender2ogre 0.6.0
+
+material pointerMaterial 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass pointerMaterial
+        {
+            ambient 1.0 0.0 0.003042803844437003 1.0
+            diffuse 1.0 0.0 0.003042803844437003 1.0
+            specular 1.0 1.0 1.0 1.0 122.75
+            emissive 0.0 0.0 0.0 1.0
+
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+
+        }
+    }
+}
