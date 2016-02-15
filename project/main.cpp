@@ -8,6 +8,7 @@ using namespace Annwvyn;
 
 //Include our level/stages here
 #include "myLevel.hpp"
+#include "StartupMenu.hpp"
 
 #include "KeyboardCommands.hpp"
 
@@ -48,6 +49,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	//Do the other initialization herttEventListener(); //Basic events
 
 	//Intentiate and register our basic level
+	AnnEngine::Instance()->getLevelManager()->addLevel(new StartupMenu);
 	AnnEngine::Instance()->getLevelManager()->addLevel(new MyLevel);
 	//This will make the game load and start the 1st we have registered
 	AnnEngine::Instance()->getLevelManager()->jumpToFirstLevel();
