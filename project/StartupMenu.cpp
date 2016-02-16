@@ -4,7 +4,8 @@
 
 MenuInput::MenuInput() : constructListener()
 {
-
+	auto textInputer(AnnEngine::Instance()->getEventManager()->getTextInputer());
+	textInputer->startListening();
 }
 
 void MenuInput::MouseEvent(AnnMouseEvent e)
@@ -15,6 +16,12 @@ void MenuInput::MouseEvent(AnnMouseEvent e)
 
 int MenuInput::getX(){return X;}
 int MenuInput::getY(){return Y;}
+
+void MenuInput::tick()
+{
+	auto textInputer(AnnEngine::Instance()->getEventManager()->getTextInputer());
+	AnnDebug() << "Text content : " << textInputer->getInput();
+}
 
 StartupMenu::StartupMenu() : constructLevel(),
 	GameLevel(nullptr),

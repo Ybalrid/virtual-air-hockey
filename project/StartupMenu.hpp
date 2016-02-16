@@ -8,6 +8,7 @@ public:
 	MenuInput();
 
 	void MouseEvent(AnnMouseEvent e);
+	void tick();
 
 	int getX();
 	int getY();
