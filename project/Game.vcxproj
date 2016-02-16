@@ -30,6 +30,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PlayerPaddleAction.cpp" />
+    <ClCompile Include="StartupMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -40,6 +41,7 @@
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="pch\stdafx.h" />
     <ClInclude Include="PlayerPaddleAction.hpp" />
+    <ClInclude Include="StartupMenu.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FF00A220-BA2F-45E4-8335-A7ACCACD0F1B}</ProjectGuid>

@@ -9,6 +9,7 @@
     <ClCompile Include="PlayerPaddleAction.cpp" />
     <ClCompile Include="KeyboardCommands.cpp" />
     <ClCompile Include="FalconController.cpp" />
+    <ClCompile Include="StartupMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -26,5 +27,6 @@
     <ClInclude Include="PlayerPaddleAction.hpp" />
     <ClInclude Include="KeyboardCommands.hpp" />
     <ClInclude Include="FalconController.hpp" />
+    <ClInclude Include="StartupMenu.hpp" />
   </ItemGroup>
 </Project>
