@@ -78,8 +78,6 @@ public:
 	void communicate(float frameTime);
 	void doClientCommunication();
 	void checkNetworkTimeout();
-	void prepareDataForClient();
-	void clientWantToJoin();
 	void runLogic();
 };
 
