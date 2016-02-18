@@ -21,12 +21,21 @@ private:
 	int commErrors;
 	bool connected;
 	bool active;
+	int playerN;
 	int timeout;
 	UCHAR buttons;
 	char netIP[16];
 	int  commWarnings;   // count of communication warnings
 public:
 	NetPlayer(void);
+
+	float getX();
+	float getY();
+	float getZ();
+
+	void setNetPlayerPosition(float x, float y, float z);
+	
+
 
 	void setNetData(PlayerStc ss);
 
@@ -71,6 +80,8 @@ public:
 	int getcommErrors() { return commErrors;}
 	// Set commErrors
     void setCommErrors(int e) {commErrors = e;}
+
+	int getPlayerN()  {return playerN;}
 
 	~NetPlayer(void);
 };

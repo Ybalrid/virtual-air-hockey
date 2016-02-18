@@ -60,7 +60,7 @@ void MyLevel::communicate(float frameTime)
 
 }
 
-void MyLevel::connecToServer() 
+void MyLevel::connectToServer() 
 {
 	static int step = 0;
     static float waitTime;  // seconds we have waited for a response from server
@@ -72,7 +72,7 @@ void MyLevel::connecToServer()
     if(clientConnected)     // if connected
     {
         tryToConnect = false;
-        console->print("Currently connected");
+        AnnDebug() << "Currently connected";
         return;
     }
 
@@ -118,7 +118,7 @@ void MyLevel::connecToServer()
         error = net.createClient(remoteIP, port, netNS::UDP);
         if(error != netNS::NET_OK)          // if error
         {
-            console->print(net.getError(error));    // display error message
+            AnnDebug() << net.getError(error);    // display error message
             tryToConnect = false;
             step = 0;
             return;
@@ -129,7 +129,7 @@ void MyLevel::connecToServer()
         size = sizeof(toServerData);
         AnnDebug() << "'Request to join' sent to server.";
         error = net.sendData((char*) &toServerData, size, remoteIP, port);
-        console->print(net.getError(error));
+        AnnDebug() << net.getError(error);
         waitTime = 0;
         step = 4;
         break;
@@ -206,7 +206,7 @@ void MyLevel::sendInfoToServer()
 {
     int size;
     // prepare structure to be sent
-    toServerData.buttons = buttonState;
+    //toServerData.buttons = buttonState;
     toServerData.playerN = playerN;
     // send data from client to server
     size = sizeof(toServerData);
@@ -245,6 +245,22 @@ void MyLevel::getInfoFromServer()
         commWarnings = 0;
     }
 
+}
+
+
+//=============================================================================
+// Start a new round of play
+//=============================================================================
+void MyLevel::roundStart()
+{
+    // Start ships on opposite sides of planet in stable clockwise orbit
+    //player[0].setX();
+    //player[1].setX();
+    //player[0].setY();
+    //player[1].setY();
+
+    countDownTimer = COUNT_DOWN;
+    countDownOn = true;
 }
 
 

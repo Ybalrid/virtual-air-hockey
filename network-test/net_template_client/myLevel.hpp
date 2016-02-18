@@ -7,6 +7,9 @@ using namespace Annwvyn;
 
 const int ANVPORT = 48161;
 const int MAX_PLAYERS = 2;
+const int CONNECT_TIMEOUT = 10;
+const int ROUND_START_BIT = 0x01;
+const int COUNT_DOWN = 5;
 
 
 struct PlayerStc // state information for a player 
@@ -58,6 +61,9 @@ struct ToClientStc // stuff sent to a client from the server
 class MyLevel : public AnnAbstractLevel
 {
 private:
+	bool countDownOn;        // true when count down is displayed
+	int playerN; // our player number
+	USHORT remotePort; // remote port number
 	Net net;
 	NetPlayer player[MAX_PLAYERS];
 	int error;
@@ -65,6 +71,12 @@ private:
 	float netTime;
 	bool connected;
 	bool active;
+	bool clientConnected;
+	float countDownTimer;
+	UINT commErrors;
+    UINT commWarnings;
+    bool tryToConnect;
+	UCHAR gameState; // current game state
 	ToServerStc toServerData;
 	ToClientStc toClientData;
 	ConnectResponse connectResponse;
@@ -77,7 +89,10 @@ public:
 	int initializeServer(int port);
 	void communicate(float frameTime);
 	void doClientCommunication();
+	void connectToServer();
 	void getInfoFromServer();
+	void sendInfoToServer();
+	void roundStart();
 	void checkNetworkTimeout();
 	void runLogic();
 };
