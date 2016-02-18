@@ -15,7 +15,7 @@ struct PlayerStc
 };
 
 
-class NetPlayer
+class ServerClient
 {
 private:
 	int commErrors;
@@ -26,7 +26,7 @@ private:
 	char netIP[16];
 	int  commWarnings;   // count of communication warnings
 public:
-	NetPlayer(void);
+	ServerClient(void);
 
 	// Set netConnected boolean
     void setConnected(bool c) {connected = c;}
@@ -70,6 +70,6 @@ public:
 	// Set commErrors
     void setCommErrors(int e) {commErrors = e;}
 
-	~NetPlayer(void);
+	~ServerClient(void);
 };
 

@@ -9,11 +9,38 @@ using namespace Annwvyn;
 //Include our level/stages here
 #include "myLevel.hpp"
 
+
+#include "NetworkServer.hpp"
+#include "NetworkClient.hpp"
+
+
+
+
+const bool SERVER = true;
+
 AnnMain() //The application entry point is "AnnMain()". return type int.
 {
 	//Initialize the engine
 	AnnEngine::openConsole();
 	new AnnEngine("A game using Annwvyn");
+	NetConfig config;
+
+	//just for test:
+	config.IAmServer = false;
+	config.useTCP = false;
+	config.serverAddress = "127.0.0.1";
+
+	NetworkWorker* nw;
+	if(config.IAmServer)
+	nw = new NetworkServer;
+	else
+	{
+	nw = new NetworkClient;
+	static_cast<NetworkClient*>(nw)->config = config;
+	}
+
+	nw->initialize(ANVPORT);
+
 	
 	//Load your ressources here
 	AnnEngine::Instance()->initResources();
@@ -33,7 +60,11 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	
 	//The game is rendering here now:
 	AnnEngine::Instance()->useDefaultEventListener();
-	AnnEngine::Instance()->startGameplayLoop();
+	do
+	{
+		nw->update();
+	}
+	while(AnnEngine::Instance()->refresh());
 
 	//destroy the engine
 	delete AnnEngine::Instance();

@@ -6,8 +6,12 @@
       <Filter>pch</Filter>
     </ClCompile>
     <ClCompile Include="myLevel.cpp" />
-    <ClCompile Include="net.cpp" />
-    <ClCompile Include="netPlayer.cpp" />
+    <ClCompile Include="ServerClient.cpp" />
+    <ClCompile Include="NetworkServer.cpp" />
+    <ClCompile Include="net.cpp">
+      <Filter>netlib</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -16,6 +20,9 @@
     <Filter Include="pch">
       <UniqueIdentifier>{c1a0ba64-1187-45fa-851f-c1410c34b7c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="netlib">
+      <UniqueIdentifier>{60358642-71a7-4feb-90af-bc09bee0e6f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch\stdafx.h">
@@ -23,8 +30,13 @@
     </ClInclude>
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="net.h" />
-    <ClInclude Include="netPlayer.h" />
+    <ClInclude Include="ServerClient.h" />
+    <ClInclude Include="NetworkServer.hpp" />
+    <ClInclude Include="net.h">
+      <Filter>netlib</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkClient.hpp" />
+    <ClInclude Include="NetConfig.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />

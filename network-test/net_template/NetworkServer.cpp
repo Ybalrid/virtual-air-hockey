@@ -1,49 +1,25 @@
 #include "stdafx.h"
-#include "myLevel.hpp"
-#include "net.h"
+#include "NetworkServer.hpp"
 
-MyLevel::MyLevel() : AnnAbstractLevel()
+NetworkServer* NetworkServer::self = nullptr;
+
+NetworkServer::NetworkServer() :
+	port(ANVPORT)
 {
+	//Singleton check
+	if(self) exit(-1);
+	self = this;
+
+
 }
 
-void MyLevel::load()
+NetworkServer* NetworkServer::getSingleton()
 {
-	//For having a lighter syntax :
-	auto engine(AnnEngine::Instance());
-	
-	//Load Sinbad:
-	auto Sinbad (engine->createGameObject("Sinbad.mesh"));
-	Sinbad->setUpPhysics(100, phyShapeType::boxShape);
-	//Add it to the level list
-	levelContent.push_back(Sinbad);
-
-	//Load Ground:
-	auto Ground (engine->createGameObject("Ground.mesh"));
-	Ground->setPos(0,-2,0);
-	Ground->setUpPhysics();
-	//Add it to the level list
-	levelContent.push_back(Ground);
-
-	//Create a light source
-	auto light(engine->addLight());
-	light->setPosition(0,1,3);
-	//Add it to the level lst
-	levelLighting.push_back(light);
-
-	engine->setAmbiantLight(Ogre::ColourValue::White/2);
-
-	engine->getPlayer()->setPosition(AnnVect3(0,1,0));
-	
-
-	engine->resetPlayerPhysics();
-	/*
-	toClientData.gameState = 0;
-	initializeServer(port);
-	roundOver = true;*/
-
+	return self;
 }
-/*
-int MyLevel::initializeServer(int port)
+
+
+int NetworkServer::initialize(int port)
 {
 	std::stringstream ss;
 	if(port < netNS::MIN_PORT)
@@ -59,7 +35,7 @@ int MyLevel::initializeServer(int port)
 		return netNS::NET_ERROR;
 	}
 
-	for (int i=0; i<MAX_PLAYERS; i++)
+	for (int i=0; i<MAX_CLIENT; i++)
 	{
 		player[i].setConnected(false);
 		player[i].setActive(false);
@@ -76,7 +52,7 @@ int MyLevel::initializeServer(int port)
 }
 
 // --- Do network communications ---
-void MyLevel::communicate(float frameTime)
+void NetworkServer::communicate(float frameTime)
 {
 	// communicate with client 
 	doClientCommunication(); 
@@ -84,6 +60,7 @@ void MyLevel::communicate(float frameTime)
 	netTime += frameTime;
 	if(netTime < netNS::NET_TIMER)
 		return;
+
 	netTime -= netNS::NET_TIMER;
 	// check for inactive clients, called every NET_TIMER seconds
 	checkNetworkTimeout(); 
@@ -91,10 +68,10 @@ void MyLevel::communicate(float frameTime)
 
 // --- Check for network timeout ---
 
-void MyLevel::checkNetworkTimeout()
+void NetworkServer::checkNetworkTimeout()
 {
 	std::stringstream ss;
-	for (int i=0; i<MAX_PLAYERS; i++)
+	for (int i=0; i<MAX_CLIENT; i++)
 	{
 		if (player[i].getConnected())
 		{
@@ -110,18 +87,24 @@ void MyLevel::checkNetworkTimeout()
 	}
 }
 
-void MyLevel::doClientCommunication() 
+void NetworkServer::doClientCommunication() 
 {
 	int playN;
 	int size;
 	prepareDataForClient(); 
-	for (int i=0; i<MAX_PLAYERS; i++)
+	for (int i=0; i<MAX_CLIENT; i++)
 	{
 		size = sizeof(toServerData);
 		if(net.readData((char*) &toServerData, size, remoteIP, port) == netNS::NET_OK)
-		{
+		{ 
 			if(size > 0)
 			{
+				/*AnnDebug() << "there are things here...";
+				//AnnDebug() << (char*) &toServerData;
+				AnnDebug() << "player n : " << toServerData.playerN;
+				AnnDebug() << "x " << toServerData.x;
+				AnnDebug() << "y " << toServerData.y;
+				AnnDebug() << "z " << toServerData.z;*/
 				playN = toServerData.playerN;
 				if (playN == 255)
 				{
@@ -131,8 +114,8 @@ void MyLevel::doClientCommunication()
 				{
 					if (player[playN].getConnected())
 					{
-						if (player[playN].getActive())
-							player[playN].setButtons(toServerData.buttons);
+						if (player[playN].getActive());
+							//player[playN].setButtons(toServerData.buttons);
 						size = sizeof(toClientData);
 						// send player the latest game data
 						net.sendData((char*) &toClientData, size, player[i].getNetIP(), port);
@@ -149,19 +132,22 @@ void MyLevel::doClientCommunication()
 	}
 }
 
-void MyLevel::prepareDataForClient() 
+void NetworkServer::prepareDataForClient() 
 {
-	for (int i=0; i<MAX_PLAYERS; i++)
+	/*for (int i=0; i<MAX_CLIENT; i++)
 	{
 		toClientData.player[i].playerData = player[i].getNetData();
-	}
+	}*/
+
+	toClientData.puckPosition = AnnVect3(5,5,5);
+	toClientData.serverPaddlePos = AnnVect3(10, 10, 10);
 }
 
 //========================================================================
 // Client is requesting to join game
 //========================================================================
 
-void MyLevel::clientWantToJoin()
+void NetworkServer::clientWantToJoin()
 {
 	std::stringstream ss;
 	int size;
@@ -174,7 +160,7 @@ void MyLevel::clientWantToJoin()
 	}
 	AnnDebug() << "Player requesting to join.";
 	// find available player position to use
-	for(int i=0; i<MAX_PLAYERS; i++) // search all player position
+	for(int i=0; i<MAX_CLIENT; i++) // search all player position
 	{
 		if (player[i].getConnected() == false) // if this position available
 		{
@@ -208,7 +194,7 @@ void MyLevel::clientWantToJoin()
 }
 
 
-void MyLevel::runLogic()
+void NetworkServer::update()
 {
 	countDownTimer = COUNT_DOWN;
     countDownOn = true;
@@ -219,10 +205,6 @@ void MyLevel::runLogic()
 
 	float frameTime = AnnEngine::Instance()->getTimeFromStartUp();
 	communicate(frameTime);
-}*/
-
-
-void MyLevel::runLogic()
-{
-
 }
+
+
