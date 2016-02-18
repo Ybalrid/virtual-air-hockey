@@ -28,5 +28,6 @@
     <ClInclude Include="KeyboardCommands.hpp" />
     <ClInclude Include="FalconController.hpp" />
     <ClInclude Include="StartupMenu.hpp" />
+    <ClInclude Include="NetConfig.hpp" />
   </ItemGroup>
 </Project>

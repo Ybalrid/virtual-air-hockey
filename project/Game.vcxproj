@@ -39,6 +39,7 @@
     <ClInclude Include="FalconController.hpp" />
     <ClInclude Include="KeyboardCommands.hpp" />
     <ClInclude Include="myLevel.hpp" />
+    <ClInclude Include="NetConfig.hpp" />
     <ClInclude Include="pch\stdafx.h" />
     <ClInclude Include="PlayerPaddleAction.hpp" />
     <ClInclude Include="StartupMenu.hpp" />
