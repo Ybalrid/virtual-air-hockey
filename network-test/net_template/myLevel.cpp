@@ -37,6 +37,10 @@ void MyLevel::load()
 
 	engine->resetPlayerPhysics();
 
+	toClientData.gameState = 0;
+	initializeServer(port);
+	roundOver = true;
+
 }
 
 int MyLevel::initializeServer(int port)
@@ -60,8 +64,6 @@ int MyLevel::initializeServer(int port)
 		player[i].setConnected(false);
 		player[i].setActive(false);
 	}
-
-	// AnnEngine::Instance()->getPlayer()->setPosition(AnnVect3(0,0,2.1));
 
 	AnnDebug() << "---- Server ----";
 	net.getLocalIP(localIP);
@@ -116,14 +118,14 @@ void MyLevel::doClientCommunication()
 	for (int i=0; i<MAX_PLAYERS; i++)
 	{
 		size = sizeof(toServerData);
-		if( net.readData((char*) &toServerData, size, remoteIP) == netNS::NET_OK)
+		if(net.readData((char*) &toServerData, size, remoteIP, port) == netNS::NET_OK)
 		{
 			if(size > 0)
 			{
 				playN = toServerData.playerN;
 				if (playN == 255)
 				{
-					//clientWantsTiJoin(); TODO
+					clientWantToJoin(); 
 				}
 				else
 				{
@@ -167,7 +169,7 @@ void MyLevel::clientWantToJoin()
 	connectResponse.number = 255;
 	if (playerCount == 0)
 	{
-		//roundOver = true;
+		roundOver = true; // this needs to reset the game states !! I don't know how :/
 		// score system goes here (TODO)
 	}
 	AnnDebug() << "Player requesting to join.";
@@ -208,5 +210,13 @@ void MyLevel::clientWantToJoin()
 
 void MyLevel::runLogic()
 {
+	countDownTimer = COUNT_DOWN;
+    countDownOn = true;
+    roundOver = false;
+
+	// set the state to indicate new round
+    toClientData.gameState |= ROUND_START_BIT;
+
+	float frameTime = AnnEngine::Instance()->getTimeFromStartUp();
 	communicate(frameTime);
 }

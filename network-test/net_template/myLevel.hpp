@@ -7,6 +7,9 @@ using namespace Annwvyn;
 
 const int ANVPORT = 48161;
 const int MAX_PLAYERS = 2;
+const int CONNECT_TIMEOUT = 10;
+const int ROUND_START_BIT = 0x01;
+const int COUNT_DOWN = 5;
 
 
 struct PlayerStc // state information for a player 
@@ -58,6 +61,9 @@ struct ToClientStc // stuff sent to a client from the server
 class MyLevel : public AnnAbstractLevel
 {
 private:
+	bool countDownOn;
+	int countDownTimer;
+	bool roundOver; // true when round is over
 	Net net;
 	NetPlayer player[MAX_PLAYERS];
 	int error;
