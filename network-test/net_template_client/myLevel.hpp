@@ -77,6 +77,7 @@ public:
 	int initializeServer(int port);
 	void communicate(float frameTime);
 	void doClientCommunication();
+	void getInfoFromServer();
 	void checkNetworkTimeout();
 	void runLogic();
 };
