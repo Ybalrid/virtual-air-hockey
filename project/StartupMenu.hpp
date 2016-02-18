@@ -39,7 +39,7 @@ public:
 private:
 	AnnAbstractLevel* GameLevel;
 	AnnGameObject* pointer;
-	AnnGameObject* testCube;
+	AnnGameObject * RedCube, * GreenCube;
 
 	MenuInput* menuInputListener;
 	int mouseConvert;
@@ -49,4 +49,6 @@ private:
 	AnnGameObjectList clickable;
 
 	void RayCastClick();
+	bool isClickable(AnnGameObject* obj);
+	void objectClicked(AnnGameObject* obj);
 };

@@ -53,9 +53,14 @@ void StartupMenu::load()
 	pointer = addGameObject("pointer.mesh");
 	pointer->setPos(0,0,9);
 
-	testCube = addGameObject("RedCube.mesh");
-	testCube->setPos(0,0,8);
-	clickable.push_back(testCube);
+	RedCube = addGameObject("RedCube.mesh");
+	RedCube->setPos(0,0,8.5);
+	clickable.push_back(RedCube);
+
+	
+	GreenCube = addGameObject("GreenCube.mesh");
+	GreenCube -> setPos(0.5,0,8.5);
+	clickable.push_back(GreenCube);
 
 	AnnEngine::Instance()->getEventManager()->addListener(menuInputListener = new MenuInput);
 }
@@ -112,12 +117,28 @@ void StartupMenu::RayCastClick()
 			//AnnDebug() << "clicked :" << clicked;
 			//AnnDebug() << "testCube :" << testCube;
 
-			if(clicked == testCube)
+			if(isClickable(clicked))
 			{
-				AnnDebug() << "test cube clicked";
-				break;
+				AnnDebug() << "You have clicked on something you can click!";
+				objectClicked(clicked);
 			}
 		}
 
 
+}
+
+bool StartupMenu::isClickable(AnnGameObject* obj)
+{
+	if(!obj) return false;
+
+	for(auto clickableObject : clickable)
+		if(clickableObject == obj) return true;
+	return false;
+}
+
+void StartupMenu::objectClicked(AnnGameObject* obj)
+{
+	for(auto iter : clickable)
+		iter->node()->showBoundingBox(false);
+	obj->node()->showBoundingBox(true);
 }
