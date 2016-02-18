@@ -252,5 +252,6 @@ void MyLevel::getInfoFromServer()
 
 void MyLevel::runLogic()
 {
+	float frameTime = AnnEngine::Instance()->getTimeFromStartUp();
 	communicate(frameTime);
 }

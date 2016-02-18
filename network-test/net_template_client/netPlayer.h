@@ -28,6 +28,8 @@ private:
 public:
 	NetPlayer(void);
 
+	void setNetData(PlayerStc ss);
+
 	// Set netConnected boolean
     void setConnected(bool c) {connected = c;}
 
