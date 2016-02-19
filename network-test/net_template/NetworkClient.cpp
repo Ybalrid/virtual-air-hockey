@@ -1,21 +1,34 @@
 #include "stdafx.h"
 #include "NetworkClient.hpp"
 
-NetworkClient::NetworkClient(){tryToConnect = true;}
-int NetworkClient::initialize(int port){return 0;}
+NetworkClient::NetworkClient()
+{
+	tryToConnect = true;
+	clientConnected = false;
+}
+int NetworkClient::initialize(int port)
+{
+	last = now = AnnEngine::Instance()->getTimeFromStartUp(); 
+	return 0;
+}
 void NetworkClient::update(){
-	float frameTime = AnnEngine::Instance()->getTimeFromStartUp();
-	communicate(frameTime);}
+	AnnDebug() << "client update";
+	now = AnnEngine::Instance()->getTimeFromStartUp();
+	float frameTime = now - last;
+	last = now;
+	communicate(frameTime);
+}
 
 // --- Do network communications ---
 void NetworkClient::communicate(float frameTime)
-{
+{	
+	AnnDebug() << "Com";
 	if(clientConnected)
 		getInfoFromServer(); // Get game state from server
 	// Calculate elapsed time for network communications
-	netTime += frameTime;
-	if(netTime < netNS::NET_TIMER) // if not time to communicate
-		return;
+	/*netTime += frameTime;
+	if(netTime < netNS::NET_TIMER) // if not time to communicate*/
+		//return;
 	if(tryToConnect)
 		connectToServer(); // Attempt to connect to game server
 	else if(clientConnected)

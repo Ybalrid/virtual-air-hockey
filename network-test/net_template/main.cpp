@@ -28,7 +28,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	//just for test:
 	config.IAmServer = false;
 	config.useTCP = false;
-	config.serverAddress = "127.0.0.1";
+	config.serverAddress = "192.168.20.37";
 
 	NetworkWorker* nw;
 	if(config.IAmServer)

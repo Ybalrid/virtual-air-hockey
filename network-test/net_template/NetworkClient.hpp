@@ -47,6 +47,8 @@ private:
 	char remoteIP[16];
 	USHORT port;
 
+	float last, now;
+
 };
 
 #endif //NETCLI
