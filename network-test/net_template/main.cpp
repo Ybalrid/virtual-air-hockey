@@ -13,10 +13,11 @@ using namespace Annwvyn;
 #include "NetworkServer.hpp"
 #include "NetworkClient.hpp"
 
-
-
-
-const bool SERVER = true;
+DWORD WINAPI netUpdateLoop(LPVOID workerAddr)
+{
+	auto worker = (NetworkWorker*)workerAddr;
+	while(true) worker->update();
+}
 
 AnnMain() //The application entry point is "AnnMain()". return type int.
 {
@@ -32,13 +33,11 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 
 	NetworkWorker* nw;
 	if(config.IAmServer)
-	nw = new NetworkServer;
+		nw = new NetworkServer;
 	else
-	{
-	nw = new NetworkClient;
-	static_cast<NetworkClient*>(nw)->config = config;
-	}
-
+		nw = new NetworkClient;
+	
+	nw->config = config;
 	nw->initialize(ANVPORT);
 
 	
@@ -60,9 +59,12 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	
 	//The game is rendering here now:
 	AnnEngine::Instance()->useDefaultEventListener();
+
+	CreateThread(NULL, 0, netUpdateLoop, nw, 0, NULL);
+
 	do
 	{
-		nw->update();
+		//nw->update();
 	}
 	while(AnnEngine::Instance()->refresh());
 
