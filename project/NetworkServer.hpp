@@ -44,6 +44,8 @@ struct ToClientStc // stuff sent to a client from the server
 	//UCHAR  sounds; 
 
 	AnnVect3 postition;
+		AnnVect3 PuckPos;
+
 };
 
 enum workerType{SERVER, CLIENT};

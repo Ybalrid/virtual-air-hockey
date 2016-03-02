@@ -167,6 +167,7 @@ void NetworkServer::prepareDataForClient()
 	//toClientDafta.puckPosition = AnnVect3(5,5,5);
 	//toClientData.serverPaddlePos = AnnVect3(10, 10, 10);
 	toClientData.postition = localPosiion;
+	toClientData.PuckPos = referencePuckPosiion;
 }
 
 //========================================================================

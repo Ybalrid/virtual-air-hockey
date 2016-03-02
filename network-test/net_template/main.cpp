@@ -27,9 +27,9 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	NetConfig config;
 
 	//just for test:
-	config.IAmServer = false;
+	config.IAmServer = true;
 	config.useTCP = false;
-	config.serverAddress = "192.168.20.37";
+	config.serverAddress = "127.0.0.1";
 
 	NetworkWorker* nw;
 	if(config.IAmServer)
@@ -69,7 +69,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	while(AnnEngine::Instance()->refresh());
 
 	//destroy the engine
-	delete AnnEngine::Instance();
+	//delete AnnEngine::Instance();
 	return EXIT_SUCCESS;
 }
 
