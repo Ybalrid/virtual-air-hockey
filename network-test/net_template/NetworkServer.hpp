@@ -42,7 +42,7 @@ struct ToClientStc // stuff sent to a client from the server
 	UCHAR  gameState;
 	//UCHAR  sounds; 
 
-	AnnVect3 puckPosition, serverPaddlePos;
+	AnnVect3 postition;
 };
 
 
