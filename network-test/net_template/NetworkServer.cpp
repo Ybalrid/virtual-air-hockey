@@ -136,6 +136,7 @@ void NetworkServer::doClientCommunication()
 				else
 				{
 					AnnDebug() << "got this : " << toServerData.ClientPaddlePos;
+					distantPosition = toServerData.ClientPaddlePos;
 					if (player[playN].getConnected())
 					{
 						if (player[playN].getActive());
@@ -165,7 +166,7 @@ void NetworkServer::prepareDataForClient()
 
 	//toClientData.puckPosition = AnnVect3(5,5,5);
 	//toClientData.serverPaddlePos = AnnVect3(10, 10, 10);
-	toClientData.postition = AnnVect3(3,2,1);
+	toClientData.postition = localPosiion;
 }
 
 //========================================================================
