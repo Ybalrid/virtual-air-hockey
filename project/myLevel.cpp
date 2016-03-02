@@ -43,7 +43,10 @@ void MyLevel::load()
 	auto puck(addGameObject("puck.mesh"));
 	puck->setPos(0, -1.1, .8);
 	puck->setUpPhysics(1, phyShapeType::sphereShape);
-	puck->getBody()->setFriction(2);
+	puck->getBody()->setFriction(0);
+	puck->getBody()->setRollingFriction(0);
+	puck->getBody()->setDamping(0,0);
+	puck->getBody()->setRestitution(0);
 	
 
 
