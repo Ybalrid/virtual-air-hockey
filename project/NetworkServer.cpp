@@ -119,7 +119,7 @@ void NetworkServer::doClientCommunication()
 		size = sizeof(toServerData);
 		if(net.readData((char*) &toServerData, size, remoteIP, port) == netNS::NET_OK)
 		{ 
-					AnnDebug() << "Got " << size << " bytes from the network";
+			//AnnDebug() << "Got " << size << " bytes from the network";
 			if(size > 0)
 			{
 				/*AnnDebug() << "there are things here...";
@@ -135,7 +135,7 @@ void NetworkServer::doClientCommunication()
 				}
 				else
 				{
-					AnnDebug() << "got this : " << toServerData.ClientPaddlePos;
+					//AnnDebug() << "got this : " << toServerData.ClientPaddlePos;
 					distantPosition = toServerData.ClientPaddlePos;
 					if (player[playN].getConnected())
 					{
