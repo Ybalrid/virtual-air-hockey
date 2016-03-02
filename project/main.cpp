@@ -13,6 +13,14 @@ using namespace Annwvyn;
 
 #include "FalconController.hpp"
 
+#include "NetworkServer.hpp"
+#include "NetworkClient.hpp"
+
+DWORD WINAPI netUpdateLoop(LPVOID nwAddr)
+{
+	auto nw = (NetworkWorker*)nwAddr;
+	while(true) nw->update();
+}
 
 AnnMain() //The application entry point is "AnnMain()". return type int.
 {
@@ -27,7 +35,18 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	FalconController* Falcon = new FalconController(*out);
 	Falcon->startUpdateThread();
 
-	
+	NetConfig config;
+	config.IAmServer = false;
+	config.port = ANVPORT;
+	config.useTCP = false;
+	config.serverAddress = "192.168.1.22";
+
+	NetworkWorker* nw;
+	if(config.IAmServer) nw = new NetworkServer;
+	else nw = new NetworkClient;
+	nw->config = config;
+	nw->initialize(config.port);
+
 	//Load your ressources here
 
 	AnnEngine::Instance()->loadDir("media/table");
@@ -56,7 +75,10 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	//in the real world with the VR
 	AnnEngine::Instance()->resetOculusOrientation();
 	
-	//The game is rendering here now:
+	//start the network loop:
+	CreateThread(NULL, 0, netUpdateLoop, nw, NULL, NULL);
+
+	//The game is rendering here now
 	AnnEngine::Instance()->startGameplayLoop();
 
 
