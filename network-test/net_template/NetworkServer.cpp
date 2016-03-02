@@ -139,8 +139,9 @@ void NetworkServer::prepareDataForClient()
 		toClientData.player[i].playerData = player[i].getNetData();
 	}*/
 
-	toClientData.puckPosition = AnnVect3(5,5,5);
-	toClientData.serverPaddlePos = AnnVect3(10, 10, 10);
+	//toClientData.puckPosition = AnnVect3(5,5,5);
+	//toClientData.serverPaddlePos = AnnVect3(10, 10, 10);
+	toClientData.postition = AnnVect3(3,2,1);
 }
 
 //========================================================================
