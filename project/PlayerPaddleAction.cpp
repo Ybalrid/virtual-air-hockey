@@ -2,6 +2,7 @@
 #include "PlayerPaddleAction.hpp"
 
 #include "FalconController.hpp"
+#include "NetworkServer.hpp"
 
 using namespace Annwvyn;
 
@@ -11,7 +12,7 @@ PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObjec
 	paddleSpeed(3.f),
 	deadzone(0.20f),
 	falconFactor(15),
-	state(FALCON)
+	state(CLASSIC)
 {
 	AnnDebug() << "PLAYER PADDLE ACTION CREATED";
 	keyboardVelocity = AnnVect3::ZERO;
@@ -32,7 +33,7 @@ void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 		AnnDebug() << "Classic controls";
 		state = CLASSIC;
 	}
-		if(e.isPressed() && e.getKey() == KeyCode::a)
+	if(e.isPressed() && e.getKey() == KeyCode::a)
 	{
 		AnnDebug() << "Falcon controls";
 		state = FALCON;
@@ -72,7 +73,7 @@ void PlayerPaddleAction::KeyEvent(AnnKeyEvent e)
 		keyboardVelocity.x = 0;
 		break;
 	}
-	
+
 
 	if(!keyboardVelocity.isZeroLength())
 		keyboardVelocity.normalise();
@@ -91,12 +92,12 @@ void PlayerPaddleAction::StickEvent(AnnStickEvent e)
 
 	stickVelocity.x = trim(stickVelocity.x, deadzone);
 	stickVelocity.z = trim(stickVelocity.z, deadzone);
-	
+
 	if(!stickVelocity.isZeroLength())
 		stickVelocity.normalise();
 
 	stickVelocity *= paddleSpeed;
-	
+
 	//If button 0 (Xbox A) is currently pressed
 	if(e.isPressed(0)) resetPuck();//Reset position/orientation of the puck	
 }
@@ -114,13 +115,28 @@ void PlayerPaddleAction::tick()
 		else
 			inputVelocity = stickVelocity;
 
+		//Addapt controls for other side of the table
+		if(NetworkWorker::getSingleton()->getType() == CLIENT)
+		{
+			inputVelocity.z *= -1;
+			inputVelocity.x *= -1;
+		}
+
 		//Prevent the paddle to be out of the table
 		if((paddle->pos().x < -0.70 && inputVelocity.x < 0) 
 			|| (paddle->pos().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
 
-		if((paddle->pos().z > 1.15 && inputVelocity.z > 0) 
-			|| (paddle->pos().z <= 0.1) && inputVelocity.z < 0) inputVelocity.z = 0;
-
+		if(NetworkWorker::getSingleton()->getType() == CLIENT)
+		{
+			if((paddle->pos().z < -1.15 && inputVelocity.z < 0) 
+				|| (paddle->pos().z >= -0.1) && inputVelocity.z > 0) inputVelocity.z = 0;
+			AnnDebug() << paddle->getPosition();
+		}
+		else
+		{
+			if((paddle->pos().z > 1.15 && inputVelocity.z > 0) 
+				|| (paddle->pos().z <= 0.1) && inputVelocity.z < 0) inputVelocity.z = 0;
+		}
 		//lock the orientation upright
 		paddle->setOrientation(AnnQuaternion::IDENTITY);
 
@@ -128,6 +144,9 @@ void PlayerPaddleAction::tick()
 		paddle->getBody()->activate();
 		if(currentVelocity.y <=0)
 			inputVelocity.y = currentVelocity.y;
+
+
+
 		paddle->setLinearSpeed(inputVelocity);
 		break;
 
@@ -138,7 +157,18 @@ void PlayerPaddleAction::tick()
 		if(falcon->getButtonState(FalconController::FalconGripButton::PRINCIPAL))
 			resetPuck();
 		//AnnDebug() << falcon->getPosition();
-		AnnVect3 position = (falconFactor*falcon->getPosition() + AnnVect3(0, -1.1, 1.05));
+		AnnVect3 start(0, -1.1, 1.05);
+		AnnVect3 falconPosition(falcon->getPosition());
+
+		if(NetworkWorker::getSingleton()->getType() == CLIENT) 
+		{
+			start.z*=-1;
+			falconPosition.x*=-1;
+			falconPosition.z*=-1;
+		}
+
+
+		AnnVect3 position = (falconFactor*falconPosition + start);
 		if(position.y < -1.084) position.y = -1.084;
 		paddle->setPos(position);
 		paddle->setOrientation(AnnQuaternion::IDENTITY);
@@ -151,7 +181,8 @@ void PlayerPaddleAction::tick()
 			direction.y = 0; //only planar
 			direction.normalise();
 			AnnVect3 returnForce = direction * instantForce;
-			returnForce *= -1;
+				if(NetworkWorker::getSingleton()->getType() == SERVER) 
+					returnForce *= -1;
 			puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
 			puck->playSound("media/contact.wav");
 		}
@@ -189,7 +220,7 @@ void PlayerPaddleAction::callback(FalconController* controller)
 		if(!direction.isZeroLength())
 			direction.normalise();
 		AnnVect3 returnForce = direction * instantForce;
-		
+
 		force[0] += returnForce.x;
 		force[1] += returnForce.y;
 		force[2] += returnForce.z;

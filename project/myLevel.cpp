@@ -51,12 +51,15 @@ void MyLevel::load()
 
 		paddle=(addGameObject("paddle.mesh"));
 		paddle->setScale(0.25,0.25,0.25);
+		opponantPaddle=(addGameObject("paddle.mesh"));
+		opponantPaddle->setScale(0.25,0.25,0.25);
 
 	auto network(NetworkWorker::getSingleton());
 	if(network->getType() == SERVER)
 	{
 			engine->getPlayer()->setPosition(AnnVect3(0,-1,1.7));
 			paddle->setPos(0, -1.1, 1.05);
+			opponantPaddle->setPos(0, -1.1, -1.05);
 
 	}
 	else if(network->getType() == CLIENT)
@@ -65,10 +68,14 @@ void MyLevel::load()
 		player->setOrientation(Ogre::Euler(Ogre::Degree(180)));
 		player->setPosition(AnnVect3(0,-1,-1.7));
 		paddle->setPos(0, -1.1, -1.05);
+		opponantPaddle->setPos(0, -1.1, 1.05);
+
 	}
 
 	engine->resetPlayerPhysics();
 	paddle->setUpPhysics(10, convexShape);
+	opponantPaddle->setUpPhysics(10, convexShape);
+
 	playerPaddleActor = new PlayerPaddleAction(paddle, puck);
 	engine->getEventManager()->addListener(playerPaddleActor);
 
@@ -85,8 +92,13 @@ void MyLevel::unload()
 void MyLevel::runLogic()
 {
 	paddle->setOrientation(AnnQuaternion::IDENTITY);
+	opponantPaddle->setOrientation(AnnQuaternion::IDENTITY);
 	btRigidBody* body;
 	if(body = paddle->getBody()) body->activate();
-	
+	if(body = opponantPaddle->getBody()) body->activate();
 
+	auto network(NetworkWorker::getSingleton());
+	if(!network) return;
+	network->setLocalPositon(paddle->getPosition());
+	opponantPaddle->setPosition(network->getDistantPosition());
 }

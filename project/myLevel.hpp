@@ -17,6 +17,8 @@ public:
 	void runLogic();
 private:
 	PlayerPaddleAction* playerPaddleActor;
+
+	AnnGameObject* paddle, * opponantPaddle;
 };
 
 #endif //MY_LEVEL

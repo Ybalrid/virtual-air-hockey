@@ -36,7 +36,7 @@ AnnMain() //The application entry point is "AnnMain()". return type int.
 	Falcon->startUpdateThread();
 
 	NetConfig config;
-	config.IAmServer = false;
+	config.IAmServer = true;
 	config.port = ANVPORT;
 	config.useTCP = false;
 	config.serverAddress = "192.168.1.22";
