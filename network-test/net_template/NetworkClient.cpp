@@ -1,10 +1,16 @@
 #include "stdafx.h"
 #include "NetworkClient.hpp"
 
-NetworkClient::NetworkClient()
+ToServerStc NetworkClient::toServerData;
+
+
+
+NetworkClient::NetworkClient() : NetworkWorker()
 {
 	tryToConnect = true;
 	clientConnected = false;
+
+	myType = CLIENT;
 }
 int NetworkClient::initialize(int port)
 {
@@ -33,6 +39,7 @@ void NetworkClient::communicate(float frameTime)
 		connectToServer(); // Attempt to connect to game server
 	else if(clientConnected)
 	{
+		AnnDebug() << "Should transmit data here";
 		checkNetworkTimeout(); // check for disconnect from server
 		sendInfoToServer(); //
 	}
@@ -166,6 +173,7 @@ void NetworkClient::sendInfoToServer()
     // prepare structure to be sent
     //toServerData.buttons = buttonState;
     toServerData.playerN = playerN;
+	//toServerData.ClientPaddlePos = AnnVect3(10,20,30);
     // send data from client to server
     size = sizeof(toServerData);
     error = net.sendData((char*) &toServerData, size, remoteIP, remotePort);

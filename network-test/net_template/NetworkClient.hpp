@@ -21,7 +21,8 @@ public:
 	void sendInfoToServer();
 	void roundStart();
 	void checkNetworkTimeout();
-	NetConfig config;
+	static	ToServerStc toServerData;
+
 
 private:
 	bool countDownOn;        // true when count down is displayed
@@ -40,7 +41,6 @@ private:
     UINT commWarnings;
     bool tryToConnect;
 	UCHAR gameState; // current game state
-	ToServerStc toServerData;
 	ToClientStc toClientData;
 	ConnectResponse connectResponse;
 	int playerCount;    // number of players in game

@@ -3,6 +3,7 @@
 
 #include "net.h"
 #include "ServerClient.h"
+#include "NetConfig.hpp"
 
 const int ANVPORT = 48161;
 const int MAX_CLIENT = 1;
@@ -45,12 +46,20 @@ struct ToClientStc // stuff sent to a client from the server
 	AnnVect3 postition;
 };
 
+enum workerType{SERVER, CLIENT};
 
 class NetworkWorker
 {
 public:
+	NetworkWorker();
 	virtual int initialize(int port) = 0;
 	virtual void update() = 0;
+	NetConfig config;
+
+
+protected:
+	workerType myType;
+	static NetworkWorker* singleton;
 };
 
 class NetworkServer : public NetworkWorker
@@ -69,7 +78,6 @@ public:
 
 	void update();
 private:
-	static NetworkServer* self;
 
 	//Networking stuff : 
 	bool countDownOn;

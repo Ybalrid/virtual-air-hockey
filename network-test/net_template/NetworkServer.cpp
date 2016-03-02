@@ -1,21 +1,28 @@
 #include "stdafx.h"
 #include "NetworkServer.hpp"
 
-NetworkServer* NetworkServer::self = nullptr;
+NetworkWorker* NetworkWorker::singleton = nullptr;
+NetworkWorker::NetworkWorker()
+{
+	if(singleton) exit(-1);
+	singleton = this;
+}
 
-NetworkServer::NetworkServer() :
+
+NetworkServer::NetworkServer() : NetworkWorker(),
 	port(ANVPORT)
 {
 	//Singleton check
-	if(self) exit(-1);
-	self = this;
+
+
+	myType = SERVER;
 
 
 }
 
 NetworkServer* NetworkServer::getSingleton()
 {
-	return self;
+	return static_cast<NetworkServer*>(singleton);
 }
 
 
