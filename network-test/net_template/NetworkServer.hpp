@@ -53,12 +53,19 @@ class NetworkWorker
 public:
 	NetworkWorker();
 	static NetworkWorker* getSingleton();
+
+	//Init the network 
 	virtual int initialize(int port) = 0;
+	//Update the network state
 	virtual void update() = 0;
+	//Network configuration
 	NetConfig config;
 
+	//Use this to tell the network object the current position of the object on you side
 	void setLocalPositon(AnnVect3 position);
+	//Use this to get from the network objet the position of th object on his sie
 	AnnVect3 getDistantPosition();
+	//Return CLIENT or SERVER 
 	workerType getType();
 
 protected:
