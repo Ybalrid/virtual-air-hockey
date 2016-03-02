@@ -11,7 +11,7 @@ class NetworkClient : public NetworkWorker
 public:
 	NetworkClient();
 	//NetworkClient* getSingletion();
-
+	AnnVect3 getRefPuckPosition();
 	void update();
 	int initialize(int port);
 

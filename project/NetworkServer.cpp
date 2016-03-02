@@ -234,4 +234,9 @@ void NetworkServer::update()
 	communicate(frameTime);
 }
 
+void NetworkServer::setRefPuckPosition(AnnVect3 position)
+{
+	referencePuckPosiion = position;
+}
+
 

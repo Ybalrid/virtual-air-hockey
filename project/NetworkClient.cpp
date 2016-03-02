@@ -196,6 +196,7 @@ void NetworkClient::getInfoFromServer()
     {
 
 		distantPosition = toClientData.postition;
+		referencePuckPosiion = toClientData.PuckPos;
 
 		for(int i=0; i<MAX_CLIENT; i++)        // for all player positions
         {
@@ -235,4 +236,8 @@ void NetworkClient::roundStart()
     countDownOn = true;
 }
 
+AnnVect3 NetworkClient::getRefPuckPosition()
+{
+	return referencePuckPosiion;
+}
 

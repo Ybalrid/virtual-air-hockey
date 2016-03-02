@@ -56,6 +56,7 @@ public:
 	NetworkWorker();
 	static NetworkWorker* getSingleton();
 
+
 	//Init the network 
 	virtual int initialize(int port) = 0;
 	//Update the network state
@@ -83,6 +84,7 @@ class NetworkServer : public NetworkWorker
 public:
 	NetworkServer();
 	//NetworkServer* getSingleton();
+	void setRefPuckPosition(AnnVect3 position);
 
 	//Net code methods
 	int initialize(int port);

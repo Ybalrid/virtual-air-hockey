@@ -2,6 +2,7 @@
 #include "myLevel.hpp"
 
 #include "NetworkServer.hpp"
+#include "NetworkClient.hpp"
 
 
 MyLevel::MyLevel() : AnnAbstractLevel(),
@@ -25,7 +26,7 @@ void MyLevel::load()
 	table->getBody()->setFriction(0);
 
 	
-	auto puck(addGameObject("puck.mesh"));
+	 puck =(addGameObject("puck.mesh"));
 	puck->setPos(0, -1.1, .8);
 	puck->setUpPhysics(1, phyShapeType::sphereShape);
 	puck->getBody()->setFriction(2);
@@ -101,4 +102,8 @@ void MyLevel::runLogic()
 	if(!network) return;
 	network->setLocalPositon(paddle->getPosition());
 	opponantPaddle->setPosition(network->getDistantPosition());
+	if(network->getType() == SERVER)
+		static_cast<NetworkServer*>(network)->setRefPuckPosition(puck->getPosition());
+	else if(network->getType() == CLIENT)
+		puck->setPosition(static_cast<NetworkClient*>(network)->getRefPuckPosition());
 }
