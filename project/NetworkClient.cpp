@@ -19,7 +19,7 @@ int NetworkClient::initialize(int port)
 	return 0;
 }
 void NetworkClient::update(){
-	//AnnDebug() << "client update";
+	AnnDebug() << "client update";
 	now = AnnEngine::Instance()->getTimeFromStartUp();
 	float frameTime = now - last;
 	last = now;
@@ -29,7 +29,7 @@ void NetworkClient::update(){
 // --- Do network communications ---
 void NetworkClient::communicate(float frameTime)
 {	
-	//AnnDebug() << "Com";
+	AnnDebug() << "Com";
 	if(clientConnected)
 		getInfoFromServer(); // Get game state from server
 	// Calculate elapsed time for network communications
@@ -40,7 +40,7 @@ void NetworkClient::communicate(float frameTime)
 		connectToServer(); // Attempt to connect to game server
 	else if(clientConnected)
 	{
-		//AnnDebug() << "Should transmit data here";
+		AnnDebug() << "Should transmit data here";
 		checkNetworkTimeout(); // check for disconnect from server
 		sendInfoToServer(); //
 	}
@@ -61,7 +61,7 @@ void NetworkClient::connectToServer()
     if(clientConnected)     // if connected
     {
         tryToConnect = false;
-        //AnnDebug() << "Currently connected";
+        AnnDebug() << "Currently connected";
         return;
     }
 
@@ -123,7 +123,8 @@ void NetworkClient::connectToServer()
                 if (connectResponse.number < MAX_CLIENT)   // if valid player number
                 {
                     playerN = connectResponse.number;       // set my player number
-                   AnnDebug()  << "Connected as player number: " << playerN;
+                    ss << "Connected as player number: " << playerN;
+                    AnnDebug() << ss.str();
                     clientConnected = true;
                     commErrors = 0;
                     commWarnings = 0;
