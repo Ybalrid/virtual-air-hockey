@@ -10,6 +10,8 @@ class NetworkClient : public NetworkWorker
 {
 public:
 	NetworkClient();
+	//NetworkClient* getSingletion();
+
 	void update();
 	int initialize(int port);
 
@@ -21,7 +23,6 @@ public:
 	void sendInfoToServer();
 	void roundStart();
 	void checkNetworkTimeout();
-	static	ToServerStc toServerData;
 
 
 private:
@@ -46,6 +47,8 @@ private:
 	int playerCount;    // number of players in game
 	char remoteIP[16];
 	USHORT port;
+			ToServerStc toServerData;
+
 
 	float last, now;
 

@@ -8,6 +8,16 @@ NetworkWorker::NetworkWorker()
 	singleton = this;
 }
 
+AnnVect3 NetworkWorker::getDistantPosition()
+{
+	return distantPosition;
+}
+
+void NetworkWorker::setLocalPositon(AnnVect3 position)
+{
+	localPosiion = position;
+}
+
 
 NetworkServer::NetworkServer() : NetworkWorker(),
 	port(ANVPORT)
@@ -20,9 +30,14 @@ NetworkServer::NetworkServer() : NetworkWorker(),
 
 }
 
-NetworkServer* NetworkServer::getSingleton()
+NetworkWorker* NetworkWorker::getSingleton()
 {
-	return static_cast<NetworkServer*>(singleton);
+	return singleton;
+}
+
+workerType NetworkWorker::getType()
+{
+	return myType;
 }
 
 

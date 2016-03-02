@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NetworkClient.hpp"
 
-ToServerStc NetworkClient::toServerData;
+//fToServerStc NetworkClient::toServerData;
 
 
 
@@ -12,6 +12,7 @@ NetworkClient::NetworkClient() : NetworkWorker()
 
 	myType = CLIENT;
 }
+
 int NetworkClient::initialize(int port)
 {
 	last = now = AnnEngine::Instance()->getTimeFromStartUp(); 
@@ -175,6 +176,8 @@ void NetworkClient::sendInfoToServer()
     toServerData.playerN = playerN;
 	//toServerData.ClientPaddlePos = AnnVect3(10,20,30);
     // send data from client to server
+
+	toServerData.ClientPaddlePos = localPosiion;
     size = sizeof(toServerData);
     error = net.sendData((char*) &toServerData, size, remoteIP, remotePort);
 }
@@ -191,6 +194,9 @@ void NetworkClient::getInfoFromServer()
     int readStatus = net.readData((char *)&toClientData, size, remoteIP, remotePort);
     if( readStatus == netNS::NET_OK && size > 0) 
     {
+
+		distantPosition = toClientData.postition;
+
 		for(int i=0; i<MAX_CLIENT; i++)        // for all player positions
         {
             // load new data into each player

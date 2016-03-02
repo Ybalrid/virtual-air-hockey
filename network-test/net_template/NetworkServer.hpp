@@ -52,21 +52,28 @@ class NetworkWorker
 {
 public:
 	NetworkWorker();
+	static NetworkWorker* getSingleton();
 	virtual int initialize(int port) = 0;
 	virtual void update() = 0;
 	NetConfig config;
 
+	void setLocalPositon(AnnVect3 position);
+	AnnVect3 getDistantPosition();
+	workerType getType();
 
 protected:
 	workerType myType;
 	static NetworkWorker* singleton;
+	
+	//Local is the position on te current game. distant is the position on the other pcover the net.
+	AnnVect3 localPosiion, distantPosition, referencePuckPosiion;
 };
 
 class NetworkServer : public NetworkWorker
 {
 public:
 	NetworkServer();
-	NetworkServer* getSingleton();
+	//NetworkServer* getSingleton();
 
 	//Net code methods
 	int initialize(int port);
