@@ -9,6 +9,10 @@
     <ClCompile Include="PlayerPaddleAction.cpp" />
     <ClCompile Include="KeyboardCommands.cpp" />
     <ClCompile Include="FalconController.cpp" />
+    <ClCompile Include="net.cpp" />
+    <ClCompile Include="NetworkClient.cpp" />
+    <ClCompile Include="NetworkServer.cpp" />
+    <ClCompile Include="ServerClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -26,5 +30,10 @@
     <ClInclude Include="PlayerPaddleAction.hpp" />
     <ClInclude Include="KeyboardCommands.hpp" />
     <ClInclude Include="FalconController.hpp" />
+    <ClInclude Include="net.h" />
+    <ClInclude Include="NetConfig.hpp" />
+    <ClInclude Include="NetworkClient.hpp" />
+    <ClInclude Include="NetworkServer.hpp" />
+    <ClInclude Include="ServerClient.h" />
   </ItemGroup>
 </Project>
