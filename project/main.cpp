@@ -19,7 +19,7 @@ using namespace Annwvyn;
 DWORD WINAPI netUpdateLoop(LPVOID nwAddr)
 {
 	auto nw = (NetworkWorker*)nwAddr;
-	while(true) nw->update();
+	while(true) {nw->update();Sleep(1);}
 }
 
 AnnMain() //The application entry point is "AnnMain()". return type int.
