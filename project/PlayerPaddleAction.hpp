@@ -6,7 +6,7 @@ class PlayerPaddleAction : LISTENER, public HapticCallback
 {
 public:
 	enum controllState{CLASSIC, FALCON};
-	PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* playerPuck);
+	PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* opponantPaddle, AnnGameObject* playerPuck);
 	void StickEvent(AnnStickEvent e);
 	void KeyEvent(AnnKeyEvent e);
 	void tick();
@@ -18,7 +18,7 @@ public:
 	void setState(controllState newState);
 
 private:
-	AnnGameObject* paddle, *puck;
+	AnnGameObject* paddle, *opponant, *puck;
 	float paddleSpeed;
 	float deadzone;
 

@@ -6,9 +6,11 @@
 
 using namespace Annwvyn;
 
-PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* tablePuck) : constructListener(), 
+PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* opponantPaddle, AnnGameObject* tablePuck)
+ : constructListener(), 
 	paddle(playerPaddle),
 	puck(tablePuck),
+	opponant(opponantPaddle),
 	paddleSpeed(3.f),
 	deadzone(0.20f),
 	falconFactor(20),
@@ -20,6 +22,7 @@ PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObjec
 	stickVelocity = AnnVect3::ZERO;
 
 	paddle->testCollisionWith(puck);
+	opponantPaddle->testCollisionWith(puck);
 
 	FalconController::getSingleton()->setCallback(this);
 }
@@ -178,6 +181,19 @@ void PlayerPaddleAction::tick()
 		{
 			float instantForce = (paddle->getBody()->getLinearVelocity().length() );
 			AnnVect3 direction = paddle->pos() - puck->pos();
+			direction.y = 0; //only planar
+			direction.normalise();
+			AnnVect3 returnForce = direction * instantForce;
+				if(NetworkWorker::getSingleton()->getType() == SERVER) 
+					returnForce *= -1;
+			puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
+			puck->playSound("media/contact.wav");
+		}
+		if(NetworkWorker::getSingleton()->getType() == SERVER)
+		if(opponant->collideWith(puck))
+		{
+			float instantForce = (opponant->getBody()->getLinearVelocity().length() );
+			AnnVect3 direction = opponant->pos() - puck->pos();
 			direction.y = 0; //only planar
 			direction.normalise();
 			AnnVect3 returnForce = direction * instantForce;

@@ -80,7 +80,7 @@ void MyLevel::load()
 	paddle->setUpPhysics(10, convexShape);
 	opponantPaddle->setUpPhysics(10, convexShape);
 
-	playerPaddleActor = new PlayerPaddleAction(paddle, puck);
+	playerPaddleActor = new PlayerPaddleAction(paddle, opponantPaddle, puck);
 	engine->getEventManager()->addListener(playerPaddleActor);
 
 
