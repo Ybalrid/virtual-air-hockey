@@ -19,7 +19,7 @@ int NetworkClient::initialize(int port)
 	return 0;
 }
 void NetworkClient::update(){
-	AnnDebug() << "client update";
+	//AnnDebug() << "client update";
 	now = AnnEngine::Instance()->getTimeFromStartUp();
 	float frameTime = now - last;
 	last = now;
@@ -29,7 +29,7 @@ void NetworkClient::update(){
 // --- Do network communications ---
 void NetworkClient::communicate(float frameTime)
 {	
-	AnnDebug() << "Com";
+	//AnnDebug() << "Com";
 	if(clientConnected)
 		getInfoFromServer(); // Get game state from server
 	// Calculate elapsed time for network communications
@@ -40,8 +40,8 @@ void NetworkClient::communicate(float frameTime)
 		connectToServer(); // Attempt to connect to game server
 	else if(clientConnected)
 	{
-		AnnDebug() << "Should transmit data here";
-		checkNetworkTimeout(); // check for disconnect from server
+		/*AnnDebug() << "Should transmit data here";*/
+		//checkNetworkTimeout(); // check for disconnect from server
 		sendInfoToServer(); //
 	}
 	netTime -= netNS::NET_TIMER;
