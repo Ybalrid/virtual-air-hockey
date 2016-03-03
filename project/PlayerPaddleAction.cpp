@@ -130,7 +130,7 @@ void PlayerPaddleAction::tick()
 		{
 			if((paddle->pos().z < -1.15 && inputVelocity.z < 0) 
 				|| (paddle->pos().z >= -0.1) && inputVelocity.z > 0) inputVelocity.z = 0;
-			AnnDebug() << paddle->getPosition();
+			//AnnDebug() << paddle->getPosition();
 		}
 		else
 		{
