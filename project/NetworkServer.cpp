@@ -85,7 +85,7 @@ void NetworkServer::communicate(float frameTime)
 
 	netTime -= netNS::NET_TIMER;
 	// check for inactive clients, called every NET_TIMER seconds
-	checkNetworkTimeout(); 
+	//checkNetworkTimeout(); 
 }
 
 // --- Check for network timeout ---
