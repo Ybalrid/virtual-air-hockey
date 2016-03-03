@@ -11,8 +11,8 @@ PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObjec
 	puck(tablePuck),
 	paddleSpeed(3.f),
 	deadzone(0.20f),
-	falconFactor(15),
-	state(CLASSIC)
+	falconFactor(20),
+	state(FALCON)
 {
 	AnnDebug() << "PLAYER PADDLE ACTION CREATED";
 	keyboardVelocity = AnnVect3::ZERO;
@@ -176,7 +176,7 @@ void PlayerPaddleAction::tick()
 
 		if(paddle->collideWith(puck))
 		{
-			float instantForce = 3;
+			float instantForce = (paddle->getBody()->getLinearVelocity().length() );
 			AnnVect3 direction = paddle->pos() - puck->pos();
 			direction.y = 0; //only planar
 			direction.normalise();
@@ -194,9 +194,11 @@ void PlayerPaddleAction::tick()
 
 }
 
+bool last = false;;
 //haptics
 void PlayerPaddleAction::callback(FalconController* controller)
 {
+	
 	//AnnDebug() << "callback" << endl;
 	AnnVect3 position = (falconFactor*controller->getPosition() + AnnVect3(0, -1.1, 1.05));
 
@@ -205,13 +207,14 @@ void PlayerPaddleAction::callback(FalconController* controller)
 	if(position.y < -1.084)
 	{
 		force[0] = 0;
-		force[1] = (-1.084 - position.y) * 50;
-		force[2] = 0;
-	}
+	force[1] = (-1.084 - position.y) * 45;
+	force[2] = 0;
+}
 
-	if(paddle->collideWith(puck))
-	{
-		float instantForce = 5;
+if(paddle->collideWith(puck))
+{
+		float instantForce = puck->getBody()->getLinearVelocity().length() * 1.5;
+		AnnDebug() << "ReturnForce : " << instantForce;
 
 		//Calculate a translation vector between the paddle and puck
 		AnnVect3 direction = paddle->pos() - puck->pos();
@@ -225,8 +228,10 @@ void PlayerPaddleAction::callback(FalconController* controller)
 		force[1] += returnForce.y;
 		force[2] += returnForce.z;
 	}
-	controller->setForce(force);
-	AnnDebug() << AnnVect3(force[0], force[1], force[2]);
+	if(!last)
+	{controller->setForce(force); last = true;}
+	else last = false;
+	//AnnDebug() << AnnVect3(force[0], force[1], force[2]);
 }
 
 
