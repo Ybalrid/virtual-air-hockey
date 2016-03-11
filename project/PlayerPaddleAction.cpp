@@ -7,7 +7,7 @@
 using namespace Annwvyn;
 
 PlayerPaddleAction::PlayerPaddleAction(AnnGameObject* playerPaddle, AnnGameObject* opponantPaddle, AnnGameObject* tablePuck)
- : constructListener(), 
+	: constructListener(), 
 	paddle(playerPaddle),
 	puck(tablePuck),
 	opponant(opponantPaddle),
@@ -179,31 +179,34 @@ void PlayerPaddleAction::tick()
 
 		if(paddle->collideWith(puck))
 		{
+			AnnDebug() << "colide";
 			float instantForce = (paddle->getBody()->getLinearVelocity().length() );
 			AnnVect3 direction = paddle->pos() - puck->pos();
 			direction.y = 0; //only planar
 			direction.normalise();
 			AnnVect3 returnForce = direction * instantForce;
-				if(NetworkWorker::getSingleton()->getType() == SERVER) 
-					returnForce *= -1;
-			puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
-			puck->playSound("media/contact.wav");
-		}
-		if(NetworkWorker::getSingleton()->getType() == SERVER)
-		if(opponant->collideWith(puck))
-		{
-			float instantForce = (opponant->getBody()->getLinearVelocity().length() );
-			AnnVect3 direction = opponant->pos() - puck->pos();
-			direction.y = 0; //only planar
-			direction.normalise();
-			AnnVect3 returnForce = direction * instantForce;
-				if(NetworkWorker::getSingleton()->getType() == SERVER) 
-					returnForce *= -1;
+			if(NetworkWorker::getSingleton()->getType() == SERVER) 
+				returnForce *= -1;
 			puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
 			puck->playSound("media/contact.wav");
 		}
 
-		break;
+
+		if(NetworkWorker::getSingleton()->getType() == SERVER)
+			if(opponant->collideWith(puck))
+			{
+				float instantForce = (opponant->getBody()->getLinearVelocity().length() );
+				AnnVect3 direction = opponant->pos() - puck->pos();
+				direction.y = 0; //only planar
+				direction.normalise();
+				AnnVect3 returnForce = direction * instantForce;
+				if(NetworkWorker::getSingleton()->getType() == SERVER) 
+					returnForce *= -1;
+				puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
+				puck->playSound("media/contact.wav");
+			}
+
+			break;
 	}
 
 	puck->setOrientation(AnnQuaternion::IDENTITY);
@@ -214,7 +217,7 @@ bool last = false;;
 //haptics
 void PlayerPaddleAction::callback(FalconController* controller)
 {
-	
+
 	//AnnDebug() << "callback" << endl;
 	AnnVect3 position = (falconFactor*controller->getPosition() + AnnVect3(0, -1.1, 1.05));
 
@@ -223,12 +226,12 @@ void PlayerPaddleAction::callback(FalconController* controller)
 	if(position.y < -1.084)
 	{
 		force[0] = 0;
-	force[1] = (-1.084 - position.y) * 45;
-	force[2] = 0;
-}
+		force[1] = (-1.084 - position.y) * 45;
+		force[2] = 0;
+	}
 
-if(paddle->collideWith(puck))
-{
+	if(paddle->collideWith(puck))
+	{
 		float instantForce = puck->getBody()->getLinearVelocity().length() * 1.5;
 		AnnDebug() << "ReturnForce : " << instantForce;
 
@@ -239,6 +242,8 @@ if(paddle->collideWith(puck))
 		if(!direction.isZeroLength())
 			direction.normalise();
 		AnnVect3 returnForce = direction * instantForce;
+		if(NetworkWorker::getSingleton()->getType() == CLIENT)
+			returnForce *= -1;
 
 		force[0] += returnForce.x;
 		force[1] += returnForce.y;
