@@ -109,4 +109,14 @@ void MyLevel::runLogic()
 		static_cast<NetworkServer*>(network)->setRefPuckPosition(puck->getPosition());
 	else if(network->getType() == CLIENT)
 		puck->setPosition(static_cast<NetworkClient*>(network)->getRefPuckPosition());
+
+
+	if(network->getType() == SERVER)
+	{
+		AnnDebug() << puck->getPosition();
+		if(puck->getPosition().z < -1.355)
+			playerPaddleActor->resetPuck();
+		if(puck->getPosition().z > 1.355)
+			playerPaddleActor->resetPuck();			
+	}
 }
