@@ -238,22 +238,9 @@ void PlayerPaddleAction::callback(FalconController* controller)
 	{
 		force[0] = (0.763 - position.x) * 45;
 	}
-
-
-	if(NetworkWorker::getSingleton()->getType() == SERVER)
+	if(position.z < 0)
 	{
-		if(position.z > 0)
-		{
-			force[2] = - position.z * 45;
-		}
-
-	}
-	else if(NetworkWorker::getSingleton()->getType() == CLIENT)
-	{
-		if(position.z < 0)
-		{
-			force[2] = - position.z * 45;
-		}
+		force[2] = - position.z * 45;
 	}
 
 	//AnnDebug() << "Position : " << position;
