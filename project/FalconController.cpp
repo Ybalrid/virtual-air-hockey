@@ -56,7 +56,7 @@ void FalconController::update()
 		logger << "Update call on unitialized FalconController" << endl;
 		return;
 	}
-	std::cerr << "doing callback" << std::endl;
+	//std::cerr << "doing callback" << std::endl;
 	if(callbackObject)callbackObject->callback(this);
 	falcon.runIOLoop();
 
