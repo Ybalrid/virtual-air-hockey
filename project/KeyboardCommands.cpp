@@ -24,6 +24,15 @@ void KeyboardCommands::KeyEvent(AnnKeyEvent e)
 		case KeyCode::tab:
 			AnnEngine::Instance()->toogleOculusPerfHUD();
 			break;
+		case KeyCode::f1:
+			OgreOculusRender::showRawView();
+			break;
+		case KeyCode::f2:
+			OgreOculusRender::showMirrorView();
+			break;
+		case KeyCode::f3:
+			OgreOculusRender::showMonscopicView();
+			break;
 		}
 	}
 }
