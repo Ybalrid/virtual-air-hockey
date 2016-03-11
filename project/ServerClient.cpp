@@ -1,10 +1,11 @@
-#include "netPlayer.h"
+#include "stdafx.h"
+#include "ServerClient.h"
 
-NetPlayer::NetPlayer(void)
+ServerClient::ServerClient(void)
 {
 }
 
-PlayerStc NetPlayer::getNetData() 
+PlayerStc ServerClient::getNetData() 
 {
 	auto engine(AnnEngine::Instance());
 	PlayerStc data;
@@ -20,6 +21,6 @@ PlayerStc NetPlayer::getNetData()
 	return data;
 }
 
-NetPlayer::~NetPlayer(void)
+ServerClient::~ServerClient(void)
 {
 }

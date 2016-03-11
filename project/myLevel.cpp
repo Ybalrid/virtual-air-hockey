@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "myLevel.hpp"
-AnnGameObject* test = nullptr;
+
+#include "NetworkServer.hpp"
+#include "NetworkClient.hpp"
+
 
 MyLevel::MyLevel() : AnnAbstractLevel(),
 	playerPaddleActor(nullptr)
@@ -14,24 +17,7 @@ void MyLevel::load()
 	//For having a lighter syntax :
 	auto engine(AnnEngine::Instance());
 	
-	//Load Sinbad:
-	/*auto Sinbad (engine->createGameObject("Sinbad.mesh"));
-	Sinbad->setUpPhysics(100, phyShapeType::boxShape);
-	//Add it to the level list
-	levelContent.push_back(Sinbad);
-
-	//Load Ground:
-	auto Ground (engine->createGameObject("Ground.mesh"));
-	Ground->setPos(0,-2,0);
-	Ground->setUpPhysics();
-	//Add it to the level list
-	levelContent.push_back(Ground);
-
-	//Create a light source
-	auto light(engine->addLight());
-	light->setPosition(0,1,3);
-	//Add it to the level lst
-	levelLighting.push_back(light);*/
+	
 
 	auto table(addGameObject("table.mesh"));
 	table->setPos(0, -1.5,0);
@@ -40,19 +26,18 @@ void MyLevel::load()
 	table->getBody()->setFriction(0);
 
 	
-	auto puck(addGameObject("puck.mesh"));
+	 puck =(addGameObject("puck.mesh"));
 	puck->setPos(0, -1.1, .8);
 	puck->setUpPhysics(1, phyShapeType::sphereShape);
-	puck->getBody()->setFriction(2);
+	puck->getBody()->setFriction(0);
+	puck->getBody()->setRollingFriction(0);
+	puck->getBody()->setDamping(0,0);
+	puck->getBody()->setRestitution(0);
 	
 
 
-	auto paddle(addGameObject("paddle.mesh"));
-	paddle->setPos(0, -1.1, 1.05);
-	paddle->setScale(0.25,0.25,0.25);
-	paddle->setUpPhysics(10, convexShape);
-	playerPaddleActor = new PlayerPaddleAction(paddle, puck);
-	test = paddle;	
+
+
 
 	auto Ground (engine->createGameObject("room.mesh"));
 	Ground->setPos(0,-2,0);
@@ -62,15 +47,43 @@ void MyLevel::load()
 
 
 	//engine->setAmbiantLight(Ogre::ColourValue(0.4,0.4,0.4));
-	engine->getPlayer()->setPosition(AnnVect3(0,-1,1.7));
 
 	//Add light source directly over the table	
 	auto pointLight(addLight());
 	pointLight->setPosition(AnnVect3(0,1,0));
 
-	engine->resetPlayerPhysics();
 
+		paddle=(addGameObject("paddle.mesh"));
+		paddle->setScale(0.25,0.25,0.25);
+		opponantPaddle=(addGameObject("paddle.mesh"));
+		opponantPaddle->setScale(0.25,0.25,0.25);
+
+	auto network(NetworkWorker::getSingleton());
+	if(network->getType() == SERVER)
+	{
+			engine->getPlayer()->setPosition(AnnVect3(0,-1,1.7));
+			paddle->setPos(0, -1.1, 1.05);
+			opponantPaddle->setPos(0, -1.1, -1.05);
+
+	}
+	else if(network->getType() == CLIENT)
+	{
+		auto player(engine->getPlayer());
+		player->setOrientation(Ogre::Euler(Ogre::Degree(180)));
+		player->setPosition(AnnVect3(0,-1,-1.7));
+		paddle->setPos(0, -1.1, -1.05);
+		opponantPaddle->setPos(0, -1.1, 1.05);
+
+	}
+
+	engine->resetPlayerPhysics();
+	paddle->setUpPhysics(10, convexShape);
+	opponantPaddle->setUpPhysics(10, convexShape);
+
+	playerPaddleActor = new PlayerPaddleAction(paddle, opponantPaddle, puck);
 	engine->getEventManager()->addListener(playerPaddleActor);
+
+
 }
 
 void MyLevel::unload()
@@ -82,9 +95,18 @@ void MyLevel::unload()
 
 void MyLevel::runLogic()
 {
-	test->setOrientation(AnnQuaternion::IDENTITY);
+	paddle->setOrientation(AnnQuaternion::IDENTITY);
+	opponantPaddle->setOrientation(AnnQuaternion::IDENTITY);
 	btRigidBody* body;
-	if(body = test->getBody()) body->activate();
-	
+	if(body = paddle->getBody()) body->activate();
+	if(body = opponantPaddle->getBody()) body->activate();
 
+	auto network(NetworkWorker::getSingleton());
+	if(!network) return;
+	network->setLocalPositon(paddle->getPosition());
+	opponantPaddle->setPosition(network->getDistantPosition());
+	if(network->getType() == SERVER)
+		static_cast<NetworkServer*>(network)->setRefPuckPosition(puck->getPosition());
+	else if(network->getType() == CLIENT)
+		puck->setPosition(static_cast<NetworkClient*>(network)->getRefPuckPosition());
 }

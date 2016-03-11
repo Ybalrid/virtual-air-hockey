@@ -22,13 +22,15 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myLevel.cpp" />
     <ClCompile Include="net.cpp" />
-    <ClCompile Include="netPlayer.cpp" />
+    <ClCompile Include="NetworkServer.cpp" />
+    <ClCompile Include="ServerClient.cpp" />
     <ClCompile Include="pch\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="NetworkClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plugins.cfg" />
@@ -36,7 +38,10 @@
   <ItemGroup>
     <ClInclude Include="myLevel.hpp" />
     <ClInclude Include="net.h" />
-    <ClInclude Include="netPlayer.h" />
+    <ClInclude Include="NetConfig.hpp" />
+    <ClInclude Include="NetworkClient.hpp" />
+    <ClInclude Include="NetworkServer.hpp" />
+    <ClInclude Include="ServerClient.h" />
     <ClInclude Include="pch\stdafx.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -178,6 +183,8 @@
       <AdditionalIncludeDirectories>$(AnnwvynSDK64)\Annwvyn\include;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\include\AL;$(AnnwvynSDK64)\libsndfile\include;$(AnnwvynSDK64)\AL\openal-soft-1.15.1\OpenAL32\Include;$(AnnwvynSDK64)\OculusSDK\3rdParty\glext;$(AnnwvynSDK64)\OculusSDK\LibOVR\Src;$(AnnwvynSDK64)\OculusSDK\LibOVRKernel\Src;$(AnnwvynSDK64)\OculusSDK\LibOVR\Include;$(AnnwvynSDK64)\bullet3\src;$(AnnwvynSDK64)\OgreSDK\boost;$(AnnwvynSDK64)\OgreSDK\include\OGRE;$(AnnwvynSDK64)\OIS\include;$(AnnwvynSDK64)\glew\include\GL;$(AnnwvynSDK64)\glew\include;%(AdditionalIncludeDirectories);./pch</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalOptions>-Zm237 %(AdditionalOptions)</AdditionalOptions>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <StructMemberAlignment>1Byte</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
