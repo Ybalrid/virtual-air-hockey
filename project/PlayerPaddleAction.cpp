@@ -165,9 +165,9 @@ void PlayerPaddleAction::tick()
 
 		if(NetworkWorker::getSingleton()->getType() == CLIENT) 
 		{
-			start.z*=-1;
-			falconPosition.x*=-1;
-			falconPosition.z*=-1;
+			start.z			 *= -1;
+			falconPosition.x *= -1;
+			falconPosition.z *= -1;
 		}
 
 
@@ -179,8 +179,7 @@ void PlayerPaddleAction::tick()
 
 		if(paddle->collideWith(puck))
 		{
-			AnnDebug() << "colide";
-			float instantForce = (paddle->getBody()->getLinearVelocity().length() );
+			float instantForce = (paddle->getBody()->getLinearVelocity().length());
 			AnnVect3 direction = paddle->pos() - puck->pos();
 			direction.y = 0; //only planar
 			direction.normalise();
@@ -193,6 +192,7 @@ void PlayerPaddleAction::tick()
 
 
 		if(NetworkWorker::getSingleton()->getType() == SERVER)
+		{
 			if(opponant->collideWith(puck))
 			{
 				float instantForce = (opponant->getBody()->getLinearVelocity().length() );
@@ -205,6 +205,7 @@ void PlayerPaddleAction::tick()
 				puck->getBody()->applyCentralImpulse(returnForce.getBtVector());
 				puck->playSound("media/contact.wav");
 			}
+		}
 
 			break;
 	}
@@ -229,6 +230,33 @@ void PlayerPaddleAction::callback(FalconController* controller)
 		force[1] = (-1.084 - position.y) * 45;
 		force[2] = 0;
 	}
+	if(position.x < -0.754)
+	{
+		force[0] = (-0.754 - position.x) * 45;
+	}
+	if(position.x > 0.763)
+	{
+		force[0] = (0.763 - position.x) * 45;
+	}
+
+
+	if(NetworkWorker::getSingleton()->getType() == SERVER)
+	{
+		if(position.z > 0)
+		{
+			force[2] = - position.z * 45;
+		}
+
+	}
+	else if(NetworkWorker::getSingleton()->getType() == CLIENT)
+	{
+		if(position.z < 0)
+		{
+			force[2] = - position.z * 45;
+		}
+	}
+
+	//AnnDebug() << "Position : " << position;
 
 	if(paddle->collideWith(puck))
 	{
