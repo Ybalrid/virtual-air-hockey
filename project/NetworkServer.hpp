@@ -79,8 +79,8 @@ public:
 
 	AnnVect3 getDistantHeadPosition();
 	AnnQuaternion getDistantHeadOrientation();
-	void setLocalHeadPosition();
-	void setLocalHeadOrientaiton();
+	void setLocalHeadPosition(AnnVect3 position);
+	void setLocalHeadOrientaiton(AnnQuaternion orientation);
 
 protected:
 	workerType myType;

@@ -18,7 +18,7 @@ public:
 private:
 	PlayerPaddleAction* playerPaddleActor;
 
-	AnnGameObject* paddle, * opponantPaddle, * puck;
+	AnnGameObject* paddle, * opponantPaddle, * puck, * opponantHeadProxy;
 
 };
 

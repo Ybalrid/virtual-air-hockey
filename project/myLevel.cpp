@@ -6,7 +6,8 @@
 
 
 MyLevel::MyLevel() : AnnAbstractLevel(),
-	playerPaddleActor(nullptr)
+	playerPaddleActor(nullptr),
+	opponantHeadProxy(nullptr)
 { 
 }
 
@@ -83,6 +84,8 @@ void MyLevel::load()
 	playerPaddleActor = new PlayerPaddleAction(paddle, opponantPaddle, puck);
 	engine->getEventManager()->addListener(playerPaddleActor);
 
+	opponantHeadProxy = addGameObject("headProxy.mesh");
+
 
 }
 
@@ -118,5 +121,15 @@ void MyLevel::runLogic()
 			playerPaddleActor->resetPuck();
 		if(puck->getPosition().z > 1.355)
 			playerPaddleActor->resetPuck();			
+	}
+
+
+	network->setLocalHeadPosition(AnnEngine::Instance()->getPoseFromOOR().position);
+	network->setLocalHeadOrientaiton(AnnEngine::Instance()->getPoseFromOOR().orientation);
+
+	if(opponantHeadProxy)
+	{
+		opponantHeadProxy->setPosition(network->getDistantHeadPosition());
+		opponantHeadProxy->setOrientation(network->getDistantHeadOrientation());
 	}
 }

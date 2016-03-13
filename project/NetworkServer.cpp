@@ -18,6 +18,26 @@ void NetworkWorker::setLocalPositon(AnnVect3 position)
 	localPosiion = position;
 }
 
+void NetworkWorker::setLocalHeadPosition(AnnVect3 position)
+{
+	localHeadPosition = position;
+}
+
+void NetworkWorker::setLocalHeadOrientaiton(AnnQuaternion orientation)
+{
+	localHeadOrientaiton = orientation;
+}
+
+AnnQuaternion NetworkWorker::getDistantHeadOrientation()
+{
+	return distantHeadOrientation;
+}
+
+AnnVect3 NetworkWorker::getDistantHeadPosition()
+{
+	return distantHeadPosition;
+}
+
 
 NetworkServer::NetworkServer() : NetworkWorker(),
 	port(ANVPORT)
