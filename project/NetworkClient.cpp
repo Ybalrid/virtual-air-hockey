@@ -178,6 +178,8 @@ void NetworkClient::sendInfoToServer()
     // send data from client to server
 
 	toServerData.ClientPaddlePos = localPosiion;
+	toServerData.headPosition = localHeadPosition;
+	toServerData.headOrientation = localHeadOrientaiton;
     size = sizeof(toServerData);
     error = net.sendData((char*) &toServerData, size, remoteIP, remotePort);
 }
@@ -197,6 +199,8 @@ void NetworkClient::getInfoFromServer()
 
 		distantPosition = toClientData.postition;
 		referencePuckPosiion = toClientData.PuckPos;
+		distantHeadOrientation = toClientData.headOrientation;
+		distantHeadPosition = toClientData.headPosition;
 
 		for(int i=0; i<MAX_CLIENT; i++)        // for all player positions
         {

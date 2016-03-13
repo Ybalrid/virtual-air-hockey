@@ -29,6 +29,9 @@ struct ToServerStc // stuff sent to a server from a client
 {
 	UCHAR playerN;
 	AnnVect3 ClientPaddlePos;
+
+	AnnVect3 headPosition;
+	AnnQuaternion headOrientation;
 };
 
 struct Player
@@ -44,7 +47,10 @@ struct ToClientStc // stuff sent to a client from the server
 	//UCHAR  sounds; 
 
 	AnnVect3 postition;
-		AnnVect3 PuckPos;
+	AnnVect3 PuckPos;
+
+	AnnVect3 headPosition;
+	AnnQuaternion headOrientation;
 
 };
 
@@ -71,12 +77,18 @@ public:
 	//Return CLIENT or SERVER 
 	workerType getType();
 
+	AnnVect3 getDistantHeadPosition();
+	AnnQuaternion getDistantHeadOrientation();
+	void setLocalHeadPosition();
+	void setLocalHeadOrientaiton();
+
 protected:
 	workerType myType;
 	static NetworkWorker* singleton;
 	
 	//Local is the position on te current game. distant is the position on the other pcover the net.
-	AnnVect3 localPosiion, distantPosition, referencePuckPosiion;
+	AnnVect3 localPosiion, distantPosition, referencePuckPosiion, localHeadPosition, distantHeadPosition;
+	AnnQuaternion localHeadOrientaiton, distantHeadOrientation;
 };
 
 class NetworkServer : public NetworkWorker

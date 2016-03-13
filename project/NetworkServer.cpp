@@ -137,6 +137,9 @@ void NetworkServer::doClientCommunication()
 				{
 					//AnnDebug() << "got this : " << toServerData.ClientPaddlePos;
 					distantPosition = toServerData.ClientPaddlePos;
+					distantHeadPosition = toServerData.headPosition;
+					distantHeadOrientation = toServerData.headOrientation;
+
 					if (player[playN].getConnected())
 					{
 						if (player[playN].getActive());
@@ -168,6 +171,8 @@ void NetworkServer::prepareDataForClient()
 	//toClientData.serverPaddlePos = AnnVect3(10, 10, 10);
 	toClientData.postition = localPosiion;
 	toClientData.PuckPos = referencePuckPosiion;
+	toClientData.headPosition = localHeadPosition;
+	toClientData.headOrientation = localHeadOrientaiton;
 }
 
 //========================================================================
