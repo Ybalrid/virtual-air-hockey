@@ -27,7 +27,7 @@ void MyLevel::load()
 	table->getBody()->setFriction(0);
 
 	
-	 puck =(addGameObject("puck.mesh"));
+	puck =(addGameObject("puck.mesh"));
 	puck->setPos(0, -1.1, .8);
 	puck->setUpPhysics(1, phyShapeType::sphereShape);
 	puck->getBody()->setFriction(0);
@@ -35,11 +35,6 @@ void MyLevel::load()
 	puck->getBody()->setDamping(0,0);
 	puck->getBody()->setRestitution(0);
 	
-
-
-
-
-
 	auto Ground (engine->createGameObject("room.mesh"));
 	Ground->setPos(0,-2,0);
 	Ground->setUpPhysics();
@@ -53,11 +48,10 @@ void MyLevel::load()
 	auto pointLight(addLight());
 	pointLight->setPosition(AnnVect3(0,1,0));
 
-
-		paddle=(addGameObject("paddle.mesh"));
-		paddle->setScale(0.25,0.25,0.25);
-		opponantPaddle=(addGameObject("paddle.mesh"));
-		opponantPaddle->setScale(0.25,0.25,0.25);
+	paddle=(addGameObject("paddle.mesh"));
+	paddle->setScale(0.25,0.25,0.25);
+	opponantPaddle=(addGameObject("paddle.mesh"));
+	opponantPaddle->setScale(0.25,0.25,0.25);
 
 	auto network(NetworkWorker::getSingleton());
 	if(network->getType() == SERVER)
@@ -85,8 +79,6 @@ void MyLevel::load()
 	engine->getEventManager()->addListener(playerPaddleActor);
 
 	opponantHeadProxy = addGameObject("headProxy.mesh");
-
-
 }
 
 void MyLevel::unload()
@@ -113,7 +105,6 @@ void MyLevel::runLogic()
 	else if(network->getType() == CLIENT)
 		puck->setPosition(static_cast<NetworkClient*>(network)->getRefPuckPosition());
 
-
 	if(network->getType() == SERVER)
 	{
 		AnnDebug() << puck->getPosition();
@@ -122,7 +113,6 @@ void MyLevel::runLogic()
 		if(puck->getPosition().z > 1.355)
 			playerPaddleActor->resetPuck();			
 	}
-
 
 	network->setLocalHeadPosition(AnnEngine::Instance()->getPoseFromOOR().position);
 	network->setLocalHeadOrientaiton(AnnEngine::Instance()->getPoseFromOOR().orientation);
