@@ -19,7 +19,6 @@ private:
 	PlayerPaddleAction* playerPaddleActor;
 
 	AnnGameObject* paddle, * opponantPaddle, * puck, * opponantHeadProxy;
-
 };
 
 #endif //MY_LEVEL
