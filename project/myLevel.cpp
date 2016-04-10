@@ -21,14 +21,14 @@ void MyLevel::load()
 	
 
 	auto table(addGameObject("table.mesh"));
-	table->setPos(0, -1.5,0);
+	table->setPosition(0, -1.5,0);
 	table->setScale(0.85,0.85,0.85);
 	table->setUpPhysics();
 	table->getBody()->setFriction(0);
 
 	
 	puck =(addGameObject("puck.mesh"));
-	puck->setPos(0, -1.1, .8);
+	puck->setPosition(0, -1.1, .8);
 	puck->setUpPhysics(1, phyShapeType::sphereShape);
 	puck->getBody()->setFriction(0);
 	puck->getBody()->setRollingFriction(0);
@@ -36,7 +36,7 @@ void MyLevel::load()
 	puck->getBody()->setRestitution(0);
 	
 	auto Ground (engine->createGameObject("room.mesh"));
-	Ground->setPos(0,-2,0);
+	Ground->setPosition(0,-2,0);
 	Ground->setUpPhysics();
 	//Add it to the level list
 	levelContent.push_back(Ground);
@@ -45,7 +45,7 @@ void MyLevel::load()
 	//engine->setAmbiantLight(Ogre::ColourValue(0.4,0.4,0.4));
 
 	//Add light source directly over the table	
-	auto pointLight(addLight());
+	auto pointLight(addLightObject());
 	pointLight->setPosition(AnnVect3(0,1,0));
 
 	paddle=(addGameObject("paddle.mesh"));
@@ -57,8 +57,8 @@ void MyLevel::load()
 	if(network->getType() == SERVER)
 	{
 			engine->getPlayer()->setPosition(AnnVect3(0,-1,1.7));
-			paddle->setPos(0, -1.1, 1.05);
-			opponantPaddle->setPos(0, -1.1, -1.05);
+			paddle->setPosition(0, -1.1, 1.05);
+			opponantPaddle->setPosition(0, -1.1, -1.05);
 
 	}
 	else if(network->getType() == CLIENT)
@@ -66,8 +66,8 @@ void MyLevel::load()
 		auto player(engine->getPlayer());
 		player->setOrientation(Ogre::Euler(Ogre::Degree(180)));
 		player->setPosition(AnnVect3(0,-1,-1.7));
-		paddle->setPos(0, -1.1, -1.05);
-		opponantPaddle->setPos(0, -1.1, 1.05);
+		paddle->setPosition(0, -1.1, -1.05);
+		opponantPaddle->setPosition(0, -1.1, 1.05);
 
 	}
 
@@ -107,7 +107,7 @@ void MyLevel::runLogic()
 
 	if(network->getType() == SERVER)
 	{
-		AnnDebug() << puck->getPosition();
+		//AnnDebug() << puck->getPosition();
 		if(puck->getPosition().z < -1.355)
 			playerPaddleActor->resetPuck();
 		if(puck->getPosition().z > 1.355)

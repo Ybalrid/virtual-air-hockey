@@ -126,19 +126,19 @@ void PlayerPaddleAction::tick()
 		}
 
 		//Prevent the paddle to be out of the table
-		if((paddle->pos().x < -0.70 && inputVelocity.x < 0) 
-			|| (paddle->pos().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
+		if((paddle->getPosition().x < -0.70 && inputVelocity.x < 0) 
+			|| (paddle->getPosition().x > 0.70 && inputVelocity.x > 0)) inputVelocity.x = 0;
 
 		if(NetworkWorker::getSingleton()->getType() == CLIENT)
 		{
-			if((paddle->pos().z < -1.15 && inputVelocity.z < 0) 
-				|| (paddle->pos().z >= -0.1) && inputVelocity.z > 0) inputVelocity.z = 0;
+			if((paddle->getPosition().z < -1.15 && inputVelocity.z < 0) 
+				|| (paddle->getPosition().z >= -0.1) && inputVelocity.z > 0) inputVelocity.z = 0;
 			//AnnDebug() << paddle->getPosition();
 		}
 		else
 		{
-			if((paddle->pos().z > 1.15 && inputVelocity.z > 0) 
-				|| (paddle->pos().z <= 0.1) && inputVelocity.z < 0) inputVelocity.z = 0;
+			if((paddle->getPosition().z > 1.15 && inputVelocity.z > 0) 
+				|| (paddle->getPosition().z <= 0.1) && inputVelocity.z < 0) inputVelocity.z = 0;
 		}
 		//lock the orientation upright
 		paddle->setOrientation(AnnQuaternion::IDENTITY);
@@ -151,7 +151,14 @@ void PlayerPaddleAction::tick()
 
 
 		paddle->setLinearSpeed(inputVelocity);
+
+		if(paddle->collideWith(puck))
+			AnnDebug() << "inside collide";
+		else
+			AnnDebug() << "notCollide";
+
 		break;
+
 
 	case FALCON:
 
@@ -173,14 +180,14 @@ void PlayerPaddleAction::tick()
 
 		AnnVect3 position = (falconFactor*falconPosition + start);
 		if(position.y < -1.084) position.y = -1.084;
-		paddle->setPos(position);
+		paddle->setPosition(position);
 		paddle->setOrientation(AnnQuaternion::IDENTITY);
 		paddle->getBody()->setGravity(AnnVect3(0,0,0).getBtVector());
 
 		if(paddle->collideWith(puck))
 		{
 			float instantForce = (paddle->getBody()->getLinearVelocity().length());
-			AnnVect3 direction = paddle->pos() - puck->pos();
+			AnnVect3 direction = paddle->getPosition() - puck->getPosition();
 			direction.y = 0; //only planar
 			direction.normalise();
 			AnnVect3 returnForce = direction * instantForce;
@@ -196,7 +203,7 @@ void PlayerPaddleAction::tick()
 			if(opponant->collideWith(puck))
 			{
 				float instantForce = (opponant->getBody()->getLinearVelocity().length() );
-				AnnVect3 direction = opponant->pos() - puck->pos();
+				AnnVect3 direction = opponant->getPosition() - puck->getPosition();
 				direction.y = 0; //only planar
 				direction.normalise();
 				AnnVect3 returnForce = direction * instantForce;
@@ -247,11 +254,12 @@ void PlayerPaddleAction::callback(FalconController* controller)
 
 	if(paddle->collideWith(puck))
 	{
+		AnnDebug() << "inside collision"; 
 		float instantForce = puck->getBody()->getLinearVelocity().length() * 1.5;
-		AnnDebug() << "ReturnForce : " << instantForce;
+		//AnnDebug() << "ReturnForce : " << instantForce;
 
 		//Calculate a translation vector between the paddle and puck
-		AnnVect3 direction = paddle->pos() - puck->pos();
+		AnnVect3 direction = paddle->getPosition() - puck->getPosition();
 		direction.y = 0; //only planar
 		//Normalize it
 		if(!direction.isZeroLength())
@@ -273,7 +281,7 @@ void PlayerPaddleAction::callback(FalconController* controller)
 
 void PlayerPaddleAction::resetPuck()
 {
-	puck->setPos(0, -1.1, .8);
+	puck->setPosition(0, -1.1, .8);
 	puck->setOrientation(AnnQuaternion::IDENTITY);
 	puck->setLinearSpeed(AnnVect3::ZERO);
 }
